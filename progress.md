@@ -18,3 +18,6 @@
   - C syntax check passed with `gcc -fsyntax-only`.
   - Full Windows GCC build did not complete in this shell; use Linux/WSL/ARM cross toolchain for actual target binaries.
 - Removed generated `__pycache__` files after verification.
+- Packaged the project as a Git repository under `E:\imx6ull-linux-edge-ai-roadmap`.
+- Pushed the repository to GitHub: `https://github.com/dafeikuzi/imx6ull-linux-edge-ai-roadmap`.
+- Added `docs/session_summary_2026-06-05.md` as a handoff summary for future conversations.
