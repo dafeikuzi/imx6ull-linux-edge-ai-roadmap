@@ -1,0 +1,10 @@
+/dts-v1/;
+
+/ {
+    imx6ull_led {
+        compatible = "demo,imx6ull-led";
+        pinctrl-names = "default";
+        status = "okay";
+    };
+};
+

@@ -1,0 +1,8 @@
+{
+  "device": "imx6ull-pro",
+  "timestamp": 1710000000,
+  "ai_label": "warning",
+  "ai_score": 0.87,
+  "latency_ms": 42
+}
+
