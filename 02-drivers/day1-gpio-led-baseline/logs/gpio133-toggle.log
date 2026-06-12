@@ -1,0 +1,69 @@
+日期: 2026-06-11
+访问方式: ssh root@192.168.77.200
+
+## 1. /sys/class/leds 细节
+
+```text
+lrwxrwxrwx 1 root root 0 Jan  1 00:00 /sys/class/leds/mmc0:: -> ../../devices/soc0/soc/2100000.aips-bus/2190000.usdhc/leds/mmc0::
+lrwxrwxrwx 1 root root 0 Jan  1 00:00 /sys/class/leds/mmc1:: -> ../../devices/soc0/soc/2100000.aips-bus/2194000.usdhc/leds/mmc1::
+```
+
+`mmc0::`：
+
+```text
+trigger=none rc-feedback kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock [mmc0] mmc1 timer oneshot heartbeat backlight gpio cpu0 default-on panic
+brightness=0
+```
+
+`mmc1::`：
+
+```text
+trigger=none rc-feedback kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock mmc0 [mmc1] timer oneshot heartbeat backlight gpio cpu0 default-on panic
+brightness=0
+```
+
+判断：这两个 LED class 是 MMC 触发节点，不是普通用户 LED。
+
+## 2. gpio133 初始切换测试
+
+切换前状态：
+
+```text
+direction=out
+value=1
+active_low=0
+edge=none
+```
+
+执行命令：
+
+```bash
+echo out > /sys/class/gpio/gpio133/direction
+echo 0 > /sys/class/gpio/gpio133/value
+cat /sys/class/gpio/gpio133/value
+echo 1 > /sys/class/gpio/gpio133/value
+cat /sys/class/gpio/gpio133/value
+```
+
+输出：
+
+```text
+0
+1
+```
+
+debugfs 最终状态：
+
+```text
+gpio-133 (                    |sysfs               ) out hi
+```
+
+## 3. 后续修正
+
+后续检查本地 100ask LED 驱动示例后确认：
+
+```text
+gpio133 / GPIO5_IO05 不是 Day 2 锁定的 LED 引脚。
+Day 2 应使用 gpio131 / GPIO5_IO03。
+```
+

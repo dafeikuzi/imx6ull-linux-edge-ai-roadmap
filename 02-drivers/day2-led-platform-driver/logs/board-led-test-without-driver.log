@@ -1,0 +1,34 @@
+日期: 2026-06-11
+目标: 将 led_test 部署到板端并验证当前状态
+
+## 部署路径
+
+```text
+Board: root@192.168.77.200
+Path: /root/stage2/day2-led/led_test
+```
+
+## 文件类型
+
+```text
+/root/stage2/day2-led/led_test: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=dbc7b9af20237012aaf11cf1284c8cc818397e64, with debug_info, not stripped
+```
+
+## 运行命令
+
+```bash
+/root/stage2/day2-led/led_test /dev/imx6ull_led 1
+```
+
+## 当前输出
+
+```text
+open: No such file or directory
+```
+
+## 解释
+
+这是预期结果，因为 `imx6ull_led.ko` 尚未编译和 `insmod`，所以 `/dev/imx6ull_led` 还不存在。
+
+当前已经完成的是用户态测试程序交叉编译和板端部署；剩余工作是补齐匹配的 Kernel 4.9.88 构建目录后编译并加载内核模块。
+

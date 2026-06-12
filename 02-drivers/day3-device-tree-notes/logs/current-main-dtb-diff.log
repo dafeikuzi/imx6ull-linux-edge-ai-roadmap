@@ -1,0 +1,18 @@
+Day3 current DTB diff summary
+
+Files:
+- dt/original-before-day2.dts
+- dt/current-main.dts
+- logs/diff-original-vs-current-main.patch
+
+Line count:
+17
+
+Status changes:
++		status = "okay";
+
+Added imx6ull_led context:
++	imx6ull_led {
++		compatible = "demo,imx6ull-led";
++		pinctrl-0 = <0x39>;
++		led-gpios = <0x15 0x3 0x1>;

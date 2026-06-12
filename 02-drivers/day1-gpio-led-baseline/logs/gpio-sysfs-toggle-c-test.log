@@ -1,0 +1,5 @@
+gpio_sysfs_toggle: gpio=133 value0=0 value1=1 delay_ms=200
+after value0: 0
+after value1: 1
+EXIT:0
+1

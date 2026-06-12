@@ -1,0 +1,376 @@
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+^C 
+
+
+
+U-Boot 2017.03 (Jun 03 2020 - 13:12:42 +0800)
+
+CPU:   Freescale i.MX6ULL rev1.1 696 MHz (running at 396 MHz)
+CPU:   IndusMMC:   FSL_SDHC: 0, FSL_SDHC: 1
+Display: TFT43AB (480x272)
+Video: 480x272x24
+In:    serial
+Out:   serial
+Err:   serial
+switch to partitions #0, OK
+mmc1(part 0) is current device
+Net:   <INTERRUPT>
+=>  
+=> 
+=> 
+[HOST-SENT] setenv bootargs 'console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw'
+
+[HOST-SENT] ext4load mmc 1:2 0x80800000 /boot/zImage
+
+[HOST-SENT] ext4load mmc 1:2 0x83000000 /root/stage2/day2-led/100ask_imx6ull-14x14-day2-minimal.dtb
+
+[HOST-SENT] bootz 0x80800000 - 0x83000000
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 4.9.88 (book@100ask) (gcc version 7.5.0 (Buildroov7), cr=10c53c7d
+[    0.000000] CPU: div instructions available: patching division code
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+[    0.000000] OF: fdt:Machine model: Freescale i.MX6 ULL 14x14 EVK Board
+[ tal pages: 130048
+[    0.000000] Kernel command line: console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw
+[    0.000000] PID hash table entries: 2048 (order: 1, 8192 bytes)
+[    0.000000] Dentry cache hash table entries: 65536 (order: 6, 262144 bytesle (11264K kernel code, 1103K rwdata, 4040K rodata, 1024K init, 477K bss, 24368K reserved, 327680K cma-reserved, 0K highmem)
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+[    0.000000]     fixmap  : 0xffc00000 - 0xfff00000   (3072 kB)
+[    0.000000]     vmalloc : 0xa0800000 - 0xff800000   (1520 MB)
+[    0.000000]0.000000]       .init : 0x81100000 - 0x81200000   (1024 kB)
+[    0.000000]       .data : 0x81200000 - 0x81313c70   (1104 kB)
+[    0.000000]        .bss : 0x81315000 - 0x8138c6d8   ( 478 kB)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] Preemptible hierarchical RCU implementation.
+[    0.000000] 	Build-time adjustment of leaf fanout to 32.
+[    0.000000] 	RCU restricting CPUs from NR_CPUS=4 to nr_cpu_ids=1.
+[    0.000000] RCU: Adjusting geometry for rcu_fanou   0.004741] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.006431] CPU: Testing write buffer coherency: ok
+[    0.006536] ftrace: allocating 35227 entries in 104 pages
+[    0.140657] /cpus/cpu@0 missing clock-frequency property
+[    0.140712] CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
+[    0.140785] Setting up static identity map for 0x80100000 - 0x80100058
+[    0.229449] Brought up 1 CPUs
+[    0.229490] SMP: Total of 1 processors activated (6.00 BogoMIPS).
+[    0.229512] CPU: All CPU(s) started in SVC mode.
+[    0.231097] devtmpfs: initialized
+[    0.249146] OF: Duplicate name in lcdif@021c8000, renamed to "display#1"
+[    0.255733] VFP support v0.3: implementor 41 architecture 2 part 30 variant 7 rev 5
+[    0.256istered protocol family 16
+[    0.305740] DMA: preallocated 256 KiB pool for atomic coherent allocations
+[    0.331560] cpuidle: using governor menu
+[    0.390840] hw-breakpoint: found 5 (+1 reserved) breakpoint and 4 watchpoint registers.
+[    0.39087n node /soc/aips-bus@02000000/iomuxc@020e0000/imx6ul-evk/enet1grp
+[    0.396250] imx6ul-pinctrl 20e0000.iomuxc: initialized IMXfs
+[    0.554673] usbcore: registered new interface driver hub
+[    0.554939] usbcore: registered new device driver usb
+[    0.557520] i2c i2c-0: IMX I2C adapter registered
+[    0.557577] i2c i2c-0: can't use DMA, using PIO instead.
+[    0.559986] i2cure interface: v2.00
+[    0.561502] pps_core: LinuxPPS API ver. 1 registered
+[    0.561530] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[    0.561601] PTP clock support registered
+[    0.564746] MIPI CSI2 driver module loaded
+[    0.566013] imx rpmsg driver is registered.
+[    0.566527] Advanced Linux Sound Architecture Driver Initialized.
+[    0.568806] Bluetooth: Core ver 2.22
+[    0.568945] NET: Registered protocol family 31
+[    0.568969] Bluetooth: HCI device and connection manager initialized
+[    0.569015] Bluetooth: HCI socket layer initialized
+[    0.569054] Bluetooth: L2CAP socket layer initialized
+[    0.569149] Bluetooth: SCO socket layer initialized
+[    0.584337] clocksource: Switched to clocksource mxc_timer1
+[    0.773449] VFS: Disk quotas dquot_6.6.0
+[    0.773632] VFS: Dquot-cache hash table entries: 1024 (istered named UNIX socket transport module.
+[    0.827445] RPC: Registered udp transport module.
+[    0.827467] RPC: Registerer module loaded
+[    0.849105] workingset: timestamp_bits=30 max_order=17 bucket_order=0
+[    0.880121] NFS: Registering the id_resolver key type
+[    0.880199] Key type id_resolver registered
+[    0.880224] Key type id_legacy registered
+[    0.880354.194511] mxsfb 21c8000.lcdif: initialized
+[    1.198076] imx-sdma 20ec000.sdma: loaded firmware 3.3
+[    1.209719] 2020000.serial: ttymxc0 at MMIO 0x2020000 (irq = 20, base_baud = 5000000) is a IMX
+[    1.912361] console [ttymxc0] enabled
+[    1.918452] 21ec000.serial: ttymxc2 at MMIO 0x21ec000 (irq = 73, base_baud = 5000000) is a IMX
+[    1.929022] 21fc000.serial: ttymxc5 at MMIO 0x21fc000 (irq = 74, base_baud = 5000000) is a IMX
+[    2.194050] brd: module loaded
+[    2.290368] spi_gpio spi4: gpio-miso property not found, switching to no-rx mode
+[    2.303636] spi_imx 2008000.ecspi: No CS GPIOs available
+[    2.331141] CAN device driver interface
+[    2.338139] flexcan 2090000.can: device registered (reg_base=a0a00000, irq=29)
+[    2.405674] pps pps0: new PPS source ptp0
+[    2.412416] libphy: fec_enet_mii_bus: probed
+PP MPPE Compression module registered
+[    2.531836] NET: Registered protocol family 24
+[    2.536444] SLIP: version 0.8.4-NET[    2.558215] usbcore: registered new interface driver asix
+[    2.563822] usbcore: registered new interface driver ax88179_178a
+[    2.570200] usbcore: registered new interface driver cdc_ether
+[    2.576289] usbcore: registered new interface driver c[    2.600085] usbcore: registered new interface driver cdc_ncm
+[    2.605852] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[    2.612464] ehci-platform: EHCI generic platform driver
+[    2.672748] usbcore: registered new interface driver usbserial
+[    2.678842] usbcore: registered new interface driver usbserial_generic
+[    2.685602] usbserial: USB Serial support registered for generic
+[    2.691770] usbcore: registered new interf[    2.724678] 2184000.usb supply vbus not found, using dummy regulator
+[    2.794494] ci_hdrc ci_hdrc.1: USB 2.0 started, EHCI 1.00
+[    2.837535] imx6ul-pinctrl 20e0000.iomuxc: pin MX6UL_PAD_GPIO1_IO01 already requested by 2010000.ecspi; cannot claim for 2040000.tsc
+ Error applying setting, reverse things back
+[    2.876404] imx6ul-tsc: probe of 2040000.tsc failed with error -22
+d
+[    2.906851] goodix-ts 1-005d: touch input parameters is [id x y w p]<1 800 480 1024 1024>
+[    2.915617] 1-005d supply vdd_ana not found, using dummy regulator
+[    2.922016] 1-005d supply vcc_i2c not found, using dummy regulator
+[    2.928569] goodix-ts 1-005d: Failed get pinctrl state:output_high
+[    2.934913] goodix-ts 1-005d: Success request irq-gpio[    2.986568] goodix-ts 1-005d: I2C Addr is 5d
+.
+[    3.066743] goodix-ts 1-005d: I2C function: without pre and end cmd!
+[    3.073245] goodix-ts 1-005d: Create proc entry sRC6 protocol handler initialized
+[    3.115597] IR JVC protocol handler initialized
+[    3.120230] IR Sony protocol handler in[    3.151862] pxp-v4l2 pxp_v4l2: initialized
+etooth: HCI UART protocol BCSP registered
+[    3.194980] Bluetooth: HCI UART protocol ATH3K registered
+[    3.206684] usbcore: registered new interface driver btusb
+[    3.214742] sdhci: Secure Digital Host Controller Interface driver
+[    3.220977] sdhci: Copyright(c) Pierre Ossman
+[    3.225450] sdhci-pltfm: SDHCI platform and OF driver helper
+[    3.233588] sdhci-esdhc-imx 2190000.usdhc: could not get ultra high speed state, work on normal mode
+[    3.242985] sdhci-esdhc-imx 2190000.usdhc: Got CD GPIO
+[    3.490841] wm8960 1-001a: No platform data supplied
+[    3.525566] mmcblk1: mmc1:0001 8GTF4R 7.28 GiB 
+[    3.541085] mmcblk1boot0: mmc1:0001 8GTF4R partition 1 4.00 MiB
+[    3.641163] imx-wm8960 sound: snd-soc-dummy-dai <-> 2034000.asrc mapping ok
+[    3.648812] imx-wm8960 sound: wm8960-hifi <-> 202c000.sai mapping ok
+[    3.788982] NET: Registered protocol family 26
+[    3.795895] NET: Registered protocol family 10
+[    3.813512] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[    3.885303] Bluetooth: BNEP filters: protocol multicast
+[    3.890702] Bluetooth: BNEP socket layer initialized
+[    3.89590: rtl: loading rtl_bt/rtl8723b_config.bin
+[    3.912213] bluetooth hci0: Falling back to user helper
+[    3.933374] lib80211: common routines for IEEE802.11 drivers
+[    3.939326] Key type dns_resolver registered
+[    3.947827] cpu cpu0: Registered imx6q-cpufreq
+[    4.026508] sii902x 1-0039: Sii902x: cound not find device
+[    4.034145] imx_thermal 2000000.aips-bus:tempmon: Industrial CPU temperature grade - max:105C critical:100C passive:95C
+[    4.229704] EXT4-fs (mmcblk1p2): recovery complete
+[    4.460064] EXT4-fs (mmcblk1p2): re-mounted. Opts: data=ordered
+Starting syslogd: OK
+Starting klogd: OK
+OK
+[    4.937401] ds18b20_drv_init OK.
+[    4.955429] dht11_drv_init OK.
+[    4.985628] irda_drv_init OK.
+Populating /dev using udev: [    5.184285] udevd[176]: starting eudev-3.2.9
+[    6.135863] inv-mpu6000-spi spi2.0: mounting matrix not found: using identity...
+Initializing random number generator: OK
+Saving random seed: OK
+[    7.906062] Generic PHY 20b4000.ethernet-1:01: attached PHY driver [Generic PHY] (mii_bus:phy_addr=20b4000.ethernet-1:01, irq=-1)
+done.
+OK
+W: [pulseaudio] main.c: [1mThis program is not intended to be run as root (unless --system is specified).[0m
+[    9.481037] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+[    9.489820] Generic PHY 20b4000.ethernet-1:00: attached PHY driver [Generic PHY] (mii_bus:phy_addr=20b4000.ethernet-1:00, irq[    9.974934] fec 20b4000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
+[    9.982833] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+Starting sshd: OK
+Starting telnetd: OK
+Starting swupdate: Trying to connect to SWUpdate...
+Connected to SWUpdate via /tmp/swupdateprog
+[   14.378912] read descriptors
+
+[   77.079979] imx6ull_led: no symbol version for module_layout
+[   77.085963] imx6ull_led: loading out-of-tree module taints kernel.
+[   77.146830] imx6ull-led imx6ull_led: led on
+[   79.215421] imx6ull-led imx6ull_led: led on

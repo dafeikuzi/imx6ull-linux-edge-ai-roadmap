@@ -1,0 +1,66 @@
+# Day 2 DTB 恢复成功记录
+
+日期：2026-06-11
+
+## 现象
+
+替换 `/boot/100ask_imx6ull-14x14.dtb` 后，板子可以进入 U-Boot 和 Kernel，
+但用户态卡在 `udevadm settle` / udev worker timeout 附近：
+
+```text
+udevd: worker ... is taking a long time
+timeout 'libinput-fuzz-extract ...'
+udevadm settle failed
+```
+
+串口没有稳定进入 login/shell，网络 `192.168.77.200` 也没有恢复。
+
+## 恢复方法
+
+通过串口中断 U-Boot，临时使用备份 DTB 并指定 `init=/bin/sh` 启动：
+
+```text
+setenv bootargs 'console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw init=/bin/sh'
+ext4load mmc 1:2 0x80800000 /boot/zImage
+ext4load mmc 1:2 0x83000000 /boot/100ask_imx6ull-14x14.dtb.bak-
+bootz 0x80800000 - 0x83000000
+```
+
+进入最小 shell 后回滚主 DTB：
+
+```sh
+mount -o remount,rw /
+ls -l /boot/100ask_imx6ull-14x14.dtb*
+cp /boot/100ask_imx6ull-14x14.dtb.bak- /boot/100ask_imx6ull-14x14.dtb
+sync
+ls -l /boot/100ask_imx6ull-14x14.dtb*
+reboot -f
+```
+
+## 恢复结果
+
+恢复后主 DTB 回到原始大小：
+
+```text
+/boot/100ask_imx6ull-14x14.dtb      38686 bytes
+/boot/100ask_imx6ull-14x14.dtb.bak- 38686 bytes
+```
+
+板子正常启动，SSH 恢复：
+
+```text
+BOARD_OK
+Linux 100ask 4.9.88 #1 SMP PREEMPT Wed Apr 8 14:08:53 CST 2026 armv7l GNU/Linux
+console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw
+```
+
+网络恢复：
+
+```text
+eth0: 192.168.77.200/24
+```
+
+## 结论
+
+板子已经恢复到可用状态。Day 2 后续不再直接覆盖主 DTB，
+先检查正常 DTB 下 GPIO5_IO03/gpio131 是否被占用，再采用更保守的方式验证 LED 驱动闭环。

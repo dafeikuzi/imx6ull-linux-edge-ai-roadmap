@@ -1,0 +1,16 @@
+/*
+ * Stage 2 learning nodes. Merge into the real board .dts only after the
+ * actual LED and KEY GPIO pins are confirmed.
+ */
+
+imx6ull_led {
+	compatible = "demo,imx6ull-led";
+	led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+
+imx6ull_key {
+	compatible = "demo,imx6ull-key";
+	key-gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};

@@ -1,0 +1,97 @@
+SIZE
+38828 current-main.dtb
+49573 current-main.dts
+88401 total
+
+IMX6ULL_LED
+1555-			gpios = <0x15 0x3 0x1>;
+1556-			default-state = "on";
+1557-			linux,default-trigger = "heartbeat";
+1558-		};
+1559-	};
+1560-
+1561:	imx6ull_led {
+1562-		compatible = "demo,imx6ull-led";
+1563-		pinctrl-names = "default";
+1564-		pinctrl-0 = <0x39>;
+1565-		led-gpios = <0x15 0x3 0x1>;
+1566-		status = "okay";
+1567-	};
+1568-
+1569-	gpio_keys_100ask {
+1570-		compatible = "100ask,gpio_key";
+1571-		gpios = <0x15 0x1 0x1 0x9 0xe 0x1>;
+1572-		pinctrl-names = "default";
+1573-		pinctrl-0 = <0x3a 0x3b>;
+
+GPIO_KEYS_100ASK
+1565-		led-gpios = <0x15 0x3 0x1>;
+1566-		status = "okay";
+1567-	};
+1568-
+1569:	gpio_keys_100ask {
+1570-		compatible = "100ask,gpio_key";
+1571-		gpios = <0x15 0x1 0x1 0x9 0xe 0x1>;
+1572-		pinctrl-names = "default";
+1573-		pinctrl-0 = <0x3a 0x3b>;
+1574-	};
+1575-
+1576-	gpio-keys {
+1577-		compatible = "gpio-keys";
+1578-		pinctrl-names = "default";
+1579-		status = "disabled";
+
+GPIO_KEYS
+1570-		compatible = "100ask,gpio_key";
+1571-		gpios = <0x15 0x1 0x1 0x9 0xe 0x1>;
+1572-		pinctrl-names = "default";
+1573-		pinctrl-0 = <0x3a 0x3b>;
+1574-	};
+1575-
+1576:	gpio-keys {
+1577:		compatible = "gpio-keys";
+1578-		pinctrl-names = "default";
+1579-		status = "disabled";
+1580-
+1581-		user1 {
+1582-			label = "User1 Button";
+1583-			gpios = <0x15 0x1 0x1>;
+1584-			gpio-key,wakeup;
+1585-			linux,code = <0x2>;
+1586-		};
+1587-
+1588-		user2 {
+1589-			label = "User2 Button";
+1590-			gpios = <0x9 0xe 0x1>;
+1591-			gpio-key,wakeup;
+1592-			linux,code = <0x3>;
+1593-		};
+1594-	};
+1595-
+1596-	sound {
+1597-		compatible = "fsl,imx6ul-evk-wm8960", "fsl,imx-audio-wm8960";
+1598-		model = "wm8960-audio";
+1599-		cpu-dai = <0x3c>;
+
+PINCTRL_LEDS
+1461-						linux,phandle = <0x3f>;
+1462-						phandle = <0x3f>;
+1463-					};
+1464-
+1465:					ledgrp {
+1466-						fsl,pins = <0x14 0x58 0x0 0x5 0x0 0x110a0>;
+1467-						linux,phandle = <0x39>;
+1468-						phandle = <0x39>;
+1469-					};
+1470-
+1471-					uart3_rs485 {
+1472-						fsl,pins = <0x8 0x4c 0x0 0x5 0x0 0x1b0b0>;
+1473-						linux,phandle = <0x35>;
+
+STDERR: Warning (unit_address_vs_reg): Node /memory has a reg or ranges property, but no unit name
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-3p0@120 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddcore@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddsoc@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@1 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@2 has a unit name, but no reg property
+

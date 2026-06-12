@@ -1,0 +1,204 @@
+###############################################################################
+# Day 1 启动日志 - IMX6ULL Buildroot 系统首次启动
+#
+# 场景说明：
+#   Windows 主机  -->  虚拟机 Ubuntu 22.04  -->  USB转串口  -->  IMX6ULL Pro 开发板
+#   你的操作：在 Ubuntu 终端运行 sudo picocom -b 115200 /dev/ttyACM0
+#   结果：开发板上电后，U-Boot 自动加载 Kernel，Kernel 挂载 rootfs，启动到登录界面。
+###############################################################################
+
+=======================================================================
+第 1 部分：串口终端参数说明（picocom 配置）
+=======================================================================
+
+$ sudo picocom -b 115200 /dev/ttyACM0
+picocom v3.1
+# 为什么要用 sudo？普通用户默认没有 /dev/ttyACM0 的读写权限。
+
+port is        : /dev/ttyACM0    # 串口设备文件，对应你的 USB 转串口线
+flowcontrol    : none            # 无流控（嵌入式调试通常关闭硬件流控）
+baudrate is    : 115200          # 波特率 115200，必须和开发板 U-Boot/Kernel 的 console 参数一致
+parity is      : none            # 无校验位
+databits are   : 8               # 8 数据位
+stopbits are   : 1               # 1 停止位
+# 以上参数组合简称 "115200 8N1"，是嵌入式串口调试的事实标准。
+
+escape is      : C-a             # 退出键：Ctrl+A 再按 Ctrl+X 可退出 picocom
+local echo is  : no              # 本地回显关闭（你敲的字符由板子回传显示，不本地重复）
+noinit is      : no              # 不发送初始化命令
+noreset is     : no              # 退出时不复位串口
+hangup is      : no              # 退出时不挂断
+nolock is      : no              # 不锁定串口设备
+send_cmd is    : sz -vv          # 文件发送命令（Zmodem 协议，sz = send zmodem）
+receive_cmd is : rz -vv -E       # 文件接收命令（Zmodem 协议，rz = receive zmodem）
+emap is        : crcrlf,delbs,   # 字符映射：CR→CR+LF, DEL→BS
+logfile is     : none            # 未设置日志文件（需要时可以 --logfile xxx 保存）
+
+Type [C-a] [C-h] to see available commands
+Terminal ready
+# 出现 "Terminal ready" 表示串口物理连接正常，等待开发板发送数据。
+
+=======================================================================
+第 2 部分：开发板启动过程详解
+=======================================================================
+
+# 【阶段 A：BootROM → SPL → U-Boot】
+# 日志中看不到这个阶段，因为 U-Boot 的倒计时太快直接跳过了。
+# 这是正常的：韦东山的 BSP 默认将 U-Boot 倒计时设为很短或 0，直接加载 Kernel。
+#
+# 启动流程回顾：
+#   BootROM（芯片固化代码）
+#     -> 读取拨码开关，决定从 SD 卡启动
+#     -> 加载 SD 卡第一个分区的 SPL（Secondary Program Loader）
+#     -> SPL 初始化 DDR 内存，加载 U-Boot
+#     -> U-Boot 初始化基础硬件，执行 bootcmd 加载 Kernel 和设备树
+#
+# Day 2 会通过按回车进入 U-Boot 命令行，到时候能看到这个阶段。
+
+# 【阶段 B：Kernel 启动 + 用户态 init 初始化】
+# 以下日志来自 Kernel 驱动打印（带时间戳 [  xx.xxxxxx ]）和用户态 init 脚本。
+# 时间戳从 Kernel 启动开始计时，单位秒。
+
+# --- 网络初始化（有问题！）---
+# 板子有两个网口：eth0（ENET1）和 eth1（ENET2）
+udhcpc: sending discover
+udhcpc: no lease, failing
+# 问题分析：开发板启动后通过 DHCP 自动获取 IP，但 eth0 没有 DHCP 服务器响应。
+# 可能原因（按概率排序）：
+#   1. 网线没插好或没插
+#   2. eth0 没接入路由器/交换机，因此没有 DHCP 服务
+#   3. 你的网络环境需要手动配置静态 IP
+# 影响：Day 5 做 NFS rootfs 时必须先让网络通，这是 Day 1 最重要的遗留问题。
+Failed to bring up eth0.
+FAIL              # eth0 启动失败
+
+Starting ModemManager: OK       # 调制解调器管理（开发板没用，忽略）
+Starting NetworkManager ... done.  # NetworkManager 服务启动成功
+Starting ntpd: OK               # NTP 时间同步服务启动
+Starting mosquitto: OK          # MQTT Broker 启动（这是边缘 AI 项目需要的！）
+Starting pulseaudio: W: [pulseaudio] main.c: This program is not intended to be run as root (unless --system is specified).
+# PulseAudio 警告：不推荐以 root 运行（开发板只用 root，忽略即可）
+
+# --- Kernel 网络驱动日志 ---
+[   18.638043] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+# 含义：eth0 网口被启用（UP），但物理链路（LINK）未就绪 → 网线没插或对端没通电
+
+[   18.755712] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+# 含义：eth1 同样链路未就绪
+
+[   18.764166] Generic PHY 20b4000.ethernet-1:00: attached PHY driver [Generic PHY] (mii_bus:phy_addr=20b4000.ethernet-1:00, irq=-1)
+# 含义：eth1 的 PHY 芯片驱动已加载。PHY 是物理层芯片，负责把数字信号转为电信号。
+#       "Generic PHY" 说明用了通用 PHY 驱动，功能正常但未做芯片特定优化。
+#       irq=-1 表示没有分配中断线（轮询模式，不影响使用）。
+
+[   18.778007] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+OK               # 以上网络初始化完成（虽然有警告）
+
+# --- 远程访问服务 ---
+Starting sshd: OK               # SSH 服务器启动成功！后续可以通过 SSH 登录开发板
+                                 # SSH 比串口方便，无需 USB 线，可以直接传文件（scp）
+Starting telnetd: OK             # Telnet 服务器启动（不安全，仅调试用）
+
+# --- 系统升级服务 ---
+Starting swupdate: Trying to connect to SWUpdate...
+OK
+Connected to SWUpdate via /tmp/swupdateprog
+# SWUpdate 是嵌入式系统 OTA 升级框架，这里是韦东山 BSP 预置的。
+
+# --- 文件系统就绪 ---
+[   23.670555] file system registered
+[   23.752748] read descriptors
+[   23.756566] read strings
+# 这是 USB gadget 或 configfs 相关日志，BSP 用 USB 线模拟网卡/串口等功能。
+
+=======================================================================
+第 3 部分：登录欢迎信息
+=======================================================================
+
+Welcome to imx6ull buildroot system !
+# buildroot = 自动化嵌入式 Linux 构建工具，韦东山用它制作的根文件系统。
+
+* SourceCode:     https://gitee.com/weidongshan
+* Support:        https://support@100ask.net
+* Shop：      https://100ask.taobao.com/
+* Login:      name: root  Passwd:    # 密码为空，直接回车即可登录
+
+100ask login: root                    # 已用 root 登录
+
+COLUMNS=80;LINES=24;export COLUMNS LINES;
+# 终端尺寸信息，由串口终端传入，让 ncurses 等程序正确显示界面。
+
+=======================================================================
+第 4 部分：Ubuntu 编译环境信息（开发主机）
+=======================================================================
+
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID:    Ubuntu
+Description:    Ubuntu 22.04.5 LTS
+Release:    22.04
+Codename:    jammy
+# 虚拟机运行 Ubuntu 22.04 LTS，代号 jammy。这是长期支持版本，适合嵌入式开发。
+
+$ ip addr show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 ...     # 本地回环接口，127.0.0.1
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> ...  # 虚拟机网卡，桥接模式
+    inet 192.168.88.132/24                        # Ubuntu IP 地址，记下来，后续 NFS/TFTP 要用
+    # 子网 192.168.88.0/24，表示前 24 位是网络号，后 8 位是主机号
+    # 板子需要配置同网段的 IP，例如 192.168.88.200
+
+$ ip route show
+default via 192.168.88.2 dev ens33               # 默认网关 192.168.88.2（一般是路由器）
+192.168.88.0/24 dev ens33 src 192.168.88.132     # 本机所在子网路由
+
+# 网络拓扑图（目前的状态）：
+#
+#   路由器 (192.168.88.2)
+#     |
+#     +-- 虚拟机 Ubuntu (192.168.88.132, ens33 桥接)
+#     |
+#     +-- 开发板 IMX6ULL (???? 待分配，建议 192.168.88.200)
+#
+# 开发板 eth0 当前 DHCP 失败，Day 5 做 NFS 之前需要解决：
+#   方案一：插上网线，让路由器给板子分配 IP
+#   方案二：在 U-Boot 或板内设置静态 IP
+
+=======================================================================
+第 5 部分：ARM 交叉编译工具链
+=======================================================================
+
+$ which arm-linux-gnueabihf-gcc
+/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
+# 工具链路径，来自韦东山资料包，安装在 /opt/100ask/ 下。
+
+$ arm-linux-gnueabihf-gcc -v
+Target: arm-linux-gnueabihf    # 目标架构：ARM 32位，带硬件浮点（hf = hard float）
+                               # IMX6ULL 是 ARM Cortex-A7，属于 ARMv7-A 架构
+                               # gnueabihf 含义拆解：
+                               #   gnu    = GNU C 库（glibc）
+                               #   eabi   = 嵌入式 ARM 二进制接口
+                               #   hf     = 硬件浮点（FPU 直接算浮点数）
+gcc version 7.5.0 (Linaro GCC 7.5-2019.12)
+# 注意：这个 gcc 运行在 x86_64 Ubuntu 上，但输出的二进制代码是 arm 指令。
+#      这就是"交叉编译"——编译器的宿主机和目标机是不同的 CPU 架构。
+#
+# 用 file 命令验证：
+#   $ file hello
+#   hello: ELF 32-bit LSB executable, ARM, ...
+#   ↑ 看到 "ARM" 就说明交叉编译成功了。
+
+=======================================================================
+Day 1 总结
+=======================================================================
+
+已完成：
+  - 串口连接正常（/dev/ttyACM0, 115200 8N1）
+  - 开发板 SD 卡启动成功，进入 Buildroot 系统
+  - SSH、Telnet、MQTT 服务均已启动
+  - 交叉工具链就绪（Linaro GCC 7.5.0, arm-linux-gnueabihf）
+
+待解决：
+  - 开发板网络不通（eth0/eth1 DHCP 失败），Day 5 之前必须解决
+  - 无法看到 U-Boot 阶段（倒计时太短），Day 2 需要进入 U-Boot 命令行
+
+下一步：进入 Day 2，编译 U-Boot 并学习 bootcmd/bootargs。

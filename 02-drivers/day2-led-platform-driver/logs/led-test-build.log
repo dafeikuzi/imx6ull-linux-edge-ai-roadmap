@@ -1,0 +1,36 @@
+日期: 2026-06-11
+目标: 编译 Day 2 用户态测试程序 led_test
+
+## 上传到 Ubuntu
+
+Day 2 源码已上传到：
+
+```text
+/home/liuzhiwei/stage2-day2-led/src/
+```
+
+包含：
+
+```text
+imx6ull_led.c
+led_test.c
+Makefile
+```
+
+## 编译命令
+
+```bash
+export PATH=/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin:$PATH
+cd /home/liuzhiwei/stage2-day2-led/src
+arm-linux-gnueabihf-gcc -Wall -O2 led_test.c -o led_test
+file led_test
+```
+
+## 编译结果
+
+```text
+led_test: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=dbc7b9af20237012aaf11cf1284c8cc818397e64, with debug_info, not stripped
+```
+
+结论：用户态测试程序已成功交叉编译为 ARM 32-bit ELF。
+

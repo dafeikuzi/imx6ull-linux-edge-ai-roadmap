@@ -16,10 +16,12 @@ output/
 *.tar
 *.tar.gz
 *.tar.xz
+*.partial
 *.onnx
 *.tflite
 *.param
 *.bin
 *.log
+!01-linux-system/boot_logs/*.log
 .env
 secrets.*

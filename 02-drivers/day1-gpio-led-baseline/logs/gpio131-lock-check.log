@@ -1,0 +1,72 @@
+日期: 2026-06-11
+访问方式: ssh root@192.168.77.200
+
+## 1. 本地源码证据
+
+E:\韦东山Linux嵌入式\学习日志\测试代码\drv\02_led\02_led_drv_imx6ull\board_100ask_imx6ull.c:
+  .pin = GROUP_PIN(5, 3), /* GPIO5_IO03 */
+
+E:\韦东山Linux嵌入式\学习日志\测试代码\drv\02_led\06_led_drv_final\100ask_led.dts:
+  pin = <GROUP_PIN(5, 3)>; /* GPIO5_IO03 */
+
+E:\韦东山Linux嵌入式\学习日志\测试代码\drv\02_led\06_led_drv_final\chip_demo_gpio.c:
+  GPIO5_IO03_BIT = (1 << 3)
+  val &= ~GPIO5_IO03_BIT; /* Active-low LED: output 0 turns it on. */
+
+E:\韦东山Linux嵌入式\学习日志\测试代码\drv\05_gpio_irq\01_simple\device_tree\原始100ask_imx6ull-14x14.dts:
+  pinctrl_leds: ledgrp {
+      MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03 0x000110A0
+  };
+
+## 2. 板端 sysfs 检查
+
+```bash
+echo 131 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio131/direction
+echo 1 > /sys/class/gpio/gpio131/value
+cat /sys/class/gpio/gpio131/value
+```
+
+输出：
+
+```text
+gpio131_high=1
+```
+
+继续切换：
+
+```bash
+echo 0 > /sys/class/gpio/gpio131/value
+cat /sys/class/gpio/gpio131/value
+```
+
+输出：
+
+```text
+gpio131_low=0
+```
+
+恢复高电平：
+
+```bash
+echo 1 > /sys/class/gpio/gpio131/value
+cat /sys/class/gpio/gpio131/value
+```
+
+输出：
+
+```text
+gpio131_restore=1
+```
+
+## 3. 锁定结论
+
+```text
+Day 2 LED GPIO:
+  GPIO5_IO03
+  全局 GPIO: gpio131
+  设备树写法: led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+```
+
+不要使用 `gpio133 / GPIO5_IO05` 作为 Day 2 LED 引脚。
+

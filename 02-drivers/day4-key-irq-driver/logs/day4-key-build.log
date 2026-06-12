@@ -1,0 +1,25 @@
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day4-key/src clean
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+rm -f key_read_test
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day4-key/src ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+
+  WARNING: Symbol version dump ./Module.symvers
+           is missing; modules will have no dependencies and modversions.
+
+  CC [M]  /home/liuzhiwei/stage2-day4-key/src/imx6ull_key.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/liuzhiwei/stage2-day4-key/src/imx6ull_key.mod.o
+  LD [M]  /home/liuzhiwei/stage2-day4-key/src/imx6ull_key.ko
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+arm-linux-gnueabihf-gcc -Wall -Wextra -O2 key_read_test.c -o key_read_test
+imx6ull_key.ko: ELF 32-bit LSB relocatable, ARM, EABI5 version 1 (SYSV), BuildID[sha1]=ed5b98570c2f8e3b0e0a544e9d883296e024e1de, not stripped
+key_read_test:  ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=39fbaed8f15fb4e0240276956088becc7505fc34, with debug_info, not stripped
+filename:       /home/liuzhiwei/stage2-day4-key/src/imx6ull_key.ko
+description:    IMX6ULL demo key irq driver
+vermagic:       4.9.88 SMP preempt mod_unload modversions ARMv7 p2v8 
+-rw-rw-r-- 1 liuzhiwei liuzhiwei  7988  6月 11 16:46 imx6ull_key.ko
+-rwxrwxr-x 1 liuzhiwei liuzhiwei 12536  6月 11 16:46 key_read_test
+

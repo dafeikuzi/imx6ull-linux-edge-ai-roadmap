@@ -1,0 +1,11 @@
+waiting for key events on /dev/imx6ull_key...
+event[1]: pressed value=0
+event[2]: released value=1
+EXIT:0
+---irq---
+208:         20  gpio-mxc   1 Edge      imx6ull-key
+---gpio---
+ gpio-129 (                    |key                 ) in  hi IRQ
+---dtb---
+-rw-rw-rw- 1 root root 38828 Jan  1 00:40 /boot/100ask_imx6ull-14x14.dtb
+-rw------- 1 root root 38970 Jan  1 01:33 /root/stage2/day4-key/100ask_imx6ull-14x14-day4-key-minimal.dtb

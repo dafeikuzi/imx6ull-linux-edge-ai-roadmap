@@ -13,6 +13,8 @@ Create a reusable IMX6ULL embedded Linux internship roadmap repository with stag
 | Add roadmap documentation | complete | Added README, learning route, architecture, interview notes, troubleshooting, evidence template. |
 | Add starter implementations | complete | Added C user app, LED control, MQTT Python bridge, Zenoh/LLM Python skeletons, driver/device-tree templates. |
 | Verify files | complete | Listed project files and checked key source files with Python/C syntax checks. |
+| Expand 01 Linux system sprint | complete | Added one-week sprint plan, full knowledge guide, boot/kernel/rootfs/U-Boot notes, NFS workflow, hello cross-compile exercise, and evidence guidance. |
+| Expand 02 drivers core sprint | complete | Added Stage 2 knowledge guide, sprint plan, per-day directories, LED/KEY/UART/I2C templates, device-tree notes, and interview review material. |
 
 ## Decisions
 
@@ -20,6 +22,11 @@ Create a reusable IMX6ULL embedded Linux internship roadmap repository with stag
 - IMX6ULL handles Linux, drivers, collection, control, light AI, and communication.
 - PC/server handles ThingsBoard, databases, Zenoh router, Ollama/LocalAI, and heavier AI.
 - Keep code small and readable so each stage can be reproduced and explained in interviews.
+- Stage 1 uses Ubuntu virtual machine + IMX6ULL_Pro real board as the default environment.
+- Stage 1 follows an "theory first, daily evidence" one-week sprint.
+- Use 韦东山 IMX6ULL_Pro BSP first for bring-up; Buildroot remains an enhancement path after the first closed loop.
+- Stage 2 focuses on the core driver loop rather than every possible IMX6ULL peripheral: LED, KEY IRQ/poll, Device Tree, UART, I2C, and dmesg.
+- Every Stage 2 sub-stage must keep its source, device-tree snippets, logs, and evidence in its own directory; do not place experiment artifacts in `02-drivers/` root.
 
 ## Errors
 

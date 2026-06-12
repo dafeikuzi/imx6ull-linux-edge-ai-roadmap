@@ -1,27 +1,10 @@
-# LED Driver
+# Legacy LED Driver Notes
 
-这里放 LED 字符设备驱动。建议先复现韦东山课程代码，再逐步改成你自己的结构。
-
-## 推荐接口
+这个目录保留为早期占位入口。阶段 2 的正式 LED 实验已经迁移到独立小阶段目录：
 
 ```text
-/dev/imx6ull_led
-write "1" -> turn on
-write "0" -> turn off
+02-drivers/day1-gpio-led-baseline/
+02-drivers/day2-led-platform-driver/
 ```
 
-## 文件建议
-
-```text
-led_driver.c
-led_test.c
-Makefile
-```
-
-## 验收
-
-- `insmod` 成功。
-- `/dev/imx6ull_led` 出现。
-- 用户态程序可以控制 LED。
-- `dmesg` 有 probe/open/write 日志。
-
+后续新增源码、`.ko`、测试程序、日志和截图时，不要放在本目录或 `02-drivers/` 根目录。请放入对应 Day 目录下的 `src/`、`dt/`、`logs/`、`evidence/`。

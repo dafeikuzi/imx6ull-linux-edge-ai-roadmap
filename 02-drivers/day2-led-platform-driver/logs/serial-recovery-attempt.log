@@ -1,0 +1,100 @@
+日期: 2026-06-11
+目标: 替换测试 DTB 后，通过串口确认板端状态并尝试恢复
+
+## 1. 串口设备
+
+Ubuntu 侧串口设备：
+
+```text
+/dev/ttyACM0
+```
+
+串口参数：
+
+```text
+115200 8N1
+```
+
+## 2. 捕获到的启动片段
+
+后台串口捕获文件：
+
+```text
+/home/liuzhiwei/stage2-day2-led/serial-capture-reset.log
+```
+
+关键片段：
+
+```text
+Reset cause: POR
+Model: Freescale i.MX6 ULL 14x14 EVK Board
+Board: MX6ULL 14x14 EVK
+DRAM:  512 MiB
+MMC:   FSL_SDHC: 0, FSL_SDHC: 1
+*** Warning - bad CRC, using default environment
+Net:   No ethernet found.
+Normal Boot
+Hit any key to stop autoboot:
+## Error: "findtee" not defined
+8846320 bytes read in 448 ms (18.8 MiB/s)
+```
+
+后续 Kernel/用户态片段：
+
+```text
+udevadm settle failed
+done
+[  187.822261] udevd[176]: seq 1772 '/devices/soc0/soc/2100000.aips-bus/2188000.ethernet/net/eth1' killed
+[  250.947427] udevd[176]: worker [206] ... mmcblk1p3 is taking a long time
+[  250.961469] udevd[176]: worker [183] ... usb1/1-0:1.0 is taking a long time
+[  250.973881] udevd[176]: worker [184] ... usb1/1-1 is taking a long time
+```
+
+## 3. 尝试过的恢复动作
+
+尝试发送回车和 `root`：
+
+```text
+没有出现 login 或 shell prompt。
+```
+
+尝试发送 `Ctrl-C`：
+
+```text
+没有拿到 shell，serial-ctrlc.log 为空。
+```
+
+尝试在网络侧访问：
+
+```text
+ping 192.168.77.200: timeout
+ssh root@192.168.77.200: connection timed out
+```
+
+## 4. 当前判断
+
+测试 DTB 能让 U-Boot 和 Kernel 启动，但用户态初始化/udev 阶段异常，网络没有恢复，也没有拿到串口登录 shell。
+
+因为当前没有网络和 shell，无法远程执行 DTB 回滚命令。
+
+## 5. 下一步现场动作
+
+需要现场按 RESET 或断电重上电，并在 U-Boot 倒计时阶段中断启动。
+
+进入 U-Boot 后有两条恢复路线：
+
+1. 临时用备份 DTB 启动，进入 Linux 后回滚 `/boot/100ask_imx6ull-14x14.dtb`。
+2. 如果能进入当前 Linux shell，直接执行：
+
+```bash
+cp /boot/100ask_imx6ull-14x14.dtb.bak- /boot/100ask_imx6ull-14x14.dtb
+sync
+reboot
+```
+
+注意：当前原 DTB 备份文件名是：
+
+```text
+/boot/100ask_imx6ull-14x14.dtb.bak-
+```
+

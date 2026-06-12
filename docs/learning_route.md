@@ -2,6 +2,11 @@
 
 ## 阶段 1：Linux 系统构建
 
+执行入口：
+
+- `01-linux-system/stage1-knowledge.md`
+- `01-linux-system/one-week-sprint.md`
+
 重点技能：
 
 - U-Boot 启动参数
@@ -24,20 +29,32 @@
 
 ## 阶段 2：驱动和设备树
 
+执行入口：
+
+- `02-drivers/stage2-knowledge.md`
+- `02-drivers/stage2-sprint.md`
+
 重点技能：
 
-- 设备树节点、pinctrl、GPIO 编号
-- 字符设备驱动
-- `read/write/ioctl`
-- 按键中断
-- I2C/UART 传感器访问
+- 设备树节点、pinctrl、GPIO descriptor
+- `platform_driver` 和 `compatible` 匹配
+- 字符设备、`read/write/poll`
+- GPIO LED 输出和按键中断
+- UART 用户态 `termios`
+- I2C 用户态访问和 client driver 思路
 - `dmesg` 调试
 
 达成效果：
 
 - LED 可以被用户态程序控制。
-- 按键触发中断。
-- I2C 或 UART 传感器可以稳定读取数据。
+- 按键触发中断，并支持阻塞读和 `poll/select`。
+- UART 或 I2C 外设可以稳定读取数据。
+- 每个实验的源码、设备树、日志和证据都保存在独立目录中。
+
+目录规则：
+
+- 阶段 2 每个小阶段必须有独立文件夹。
+- 禁止把 `.c`、`.ko`、测试程序、日志和截图混放在 `02-drivers/` 根目录。
 
 ## 阶段 3：用户态边缘应用
 
@@ -101,4 +118,3 @@
 - 数据写入数据库。
 - 大模型根据数据生成故障解释。
 - 控制建议返回 IMX6ULL。
-

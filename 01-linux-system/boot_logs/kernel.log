@@ -1,0 +1,87 @@
+###############################################################################
+# Day 3 Kernel 启动日志摘录 - IMX6ULL Buildroot
+#
+# 来源：用户在 2026-06-10 粘贴的串口/dmesg 输出。
+# 说明：该片段从 [0.535604] 开始，不包含更早的 `Linux version ...`
+#       和 `Kernel command line: ...` 行；这两项仍需用完整串口日志补齐。
+###############################################################################
+
+[    0.535604] mxs-dma 1804000.dma-apbh: initialized
+[    0.543755] SCSI subsystem initialized
+[    0.566446] Advanced Linux Sound Architecture Driver Initialized.
+[    0.568884] Bluetooth: HCI device and connection manager initialized
+[    0.568932] Bluetooth: HCI socket layer initialized
+[    0.568969] Bluetooth: L2CAP socket layer initialized
+[    0.569066] Bluetooth: SCO socket layer initialized
+[    0.773403] VFS: Disk quotas dquot_6.6.0
+[    0.773585] VFS: Dquot-cache hash table entries: 1024 (order 0, 4096 bytes)
+[    0.882169] fuse init (API version 7.26)
+[    1.194390] mxsfb 21c8000.lcdif: initialized
+[    1.209509] 2020000.serial: ttymxc0 at MMIO 0x2020000 (irq = 20, base_baud = 5000000) is a IMX
+[    1.912149] console [ttymxc0] enabled
+[    1.918291] 21ec000.serial: ttymxc2 at MMIO 0x21ec000 (irq = 73, base_baud = 5000000) is a IMX
+[    1.928859] 21fc000.serial: ttymxc5 at MMIO 0x21fc000 (irq = 74, base_baud = 5000000) is a IMX
+[    1.986511] [drm] Initialized
+[    1.990910] [drm] Initialized vivante 1.0.0 20120216 on minor 0
+[    2.315591] libphy: Fixed MDIO Bus: probed
+[    2.339010] 20b4000.ethernet supply phy not found, using dummy regulator
+[    2.402274] libphy: fec_enet_mii_bus: probed
+[    2.421184] fec 20b4000.ethernet eth0: registered PHC device 0
+[    2.428714] 2188000.ethernet supply phy not found, using dummy regulator
+[    2.493526] fec 2188000.ethernet eth1: registered PHC device 1
+[    2.560086] usbcore: registered new interface driver cdc_ether
+[    2.626144] random: fast init done
+[    3.090685] IR NEC protocol handler initialized
+[    3.095511] IR RC5(x/sz) protocol handler initialized
+[    3.100743] IR RC6 protocol handler initialized
+[    3.105459] IR JVC protocol handler initialized
+[    3.110098] IR Sony protocol handler initialized
+[    3.114861] IR SANYO protocol handler initialized
+[    3.119655] IR Sharp protocol handler initialized
+[    3.124502] IR MCE Keyboard/mouse protocol handler initialized
+[    3.130424] IR XMP protocol handler initialized
+[    3.141746] pxp-v4l2 pxp_v4l2: initialized
+[    3.244810] mmc0: SDHCI controller on 2190000.usdhc [2190000.usdhc] using ADMA
+[    3.324379] mmc1: SDHCI controller on 2194000.usdhc [2194000.usdhc] using ADMA
+[    3.447746] mmc1: new DDR MMC card at address 0001
+[    3.464438] mmcblk1: mmc1:0001 8GTF4R 7.28 GiB
+[    3.479940] mmcblk1boot0: mmc1:0001 8GTF4R partition 1 4.00 MiB
+[    3.496947] mmcblk1boot1: mmc1:0001 8GTF4R partition 2 4.00 MiB
+[    3.513801] mmcblk1rpmb: mmc1:0001 8GTF4R partition 3 512 KiB
+[    3.529620]  mmcblk1: p1 p2 p3
+[    3.801169] Bluetooth: RFCOMM TTY layer initialized
+[    3.806335] Bluetooth: RFCOMM socket layer initialized
+[    3.815622] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[    3.826339] Bluetooth: BNEP socket layer initialized
+[    3.837377] Bluetooth: HIDP socket layer initialized
+[    4.030517] EXT4-fs (mmcblk1p2): couldn't mount as ext3 due to feature incompatibilities
+[    4.061494] EXT4-fs (mmcblk1p2): mounted filesystem with ordered data mode. Opts: (null)
+[    4.069915] VFS: Mounted root (ext4 filesystem) on device 179:2.
+[    4.323888] EXT4-fs (mmcblk1p2): re-mounted. Opts: data=ordered
+[    4.795126] ds18b20_drv_init OK.
+[    4.812506] dht11_drv_init OK.
+[    4.843115] irda_drv_init OK.
+[    7.808337] Generic PHY 20b4000.ethernet-1:01: attached PHY driver [Generic PHY] (mii_bus:phy_addr=20b4000.ethernet-1:01, irq=-1)
+[    7.820801] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+[    9.407513] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+[    9.418720] Generic PHY 20b4000.ethernet-1:00: attached PHY driver [Generic PHY] (mii_bus:phy_addr=20b4000.ethernet-1:00, irq=-1)
+[    9.431233] IPv6: ADDRCONF(NETDEV_UP): eth1: link is not ready
+[    9.894816] fec 20b4000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
+[    9.902719] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[  122.174524] random: crng init done
+
+[root@100ask:~]# ls /proc/device-tree
+'#address-cells'   gpio-keys                    regulators
+'#size-cells'      gpio_keys_100ask             reserved-memory
+aliases            interrupt-controller@00a01000   sii902x-reset
+backlight          leds                         soc
+chosen             memory                       sound
+clocks             model                        spi4
+compatible         name
+cpus               pxp_v4l2
+
+[root@100ask:~]# tr -d '\0' < /proc/device-tree/model; echo
+Freescale i.MX6 ULL 14x14 EVK Board
+
+[root@100ask:~]# tr -d '\0' < /proc/device-tree/compatible; echo
+fsl,imx6ull-14x14-evkfsl,imx6ull

@@ -21,3 +21,245 @@
 - Packaged the project as a Git repository under `E:\imx6ull-linux-edge-ai-roadmap`.
 - Pushed the repository to GitHub: `https://github.com/dafeikuzi/imx6ull-linux-edge-ai-roadmap`.
 - Added `docs/session_summary_2026-06-05.md` as a handoff summary for future conversations.
+
+## 2026-06-08
+
+- Expanded `01-linux-system/` into a concrete one-week sprint learning plan.
+- Added `01-linux-system/stage1-knowledge.md` as a detailed Stage 1 knowledge guide based on public U-Boot, Linux Kernel, Buildroot, Ubuntu NFS, Bootlin, and NXP references.
+- Reworked `01-linux-system/stage1-knowledge.md` for Linux beginners: concepts now progress from basic Linux terms to embedded boot flow, then U-Boot, Kernel, Device Tree, RootFS, NFS, cross compilation, and troubleshooting.
+- Added `01-linux-system/toolchains/README.md` documenting the public Linaro ARM Linux toolchain package, official URL, expected size, interrupted-download handling, and Ubuntu installation/PATH setup. A direct download attempt from the current Windows environment was interrupted by very slow network, leaving only a `.partial` file.
+- Added `01-linux-system/one-week-sprint.md` covering:
+  - Day 1 environment and boot chain.
+  - Day 2 U-Boot build and environment variables.
+  - Day 3 Kernel and device tree.
+  - Day 4 SD RootFS.
+  - Day 5 NFS RootFS.
+  - Day 6 cross-compiled hello.
+  - Day 7 review and interview preparation.
+- Added evidence-oriented notes:
+  - `01-linux-system/boot_logs/README.md`
+  - `01-linux-system/uboot_notes/README.md`
+  - `01-linux-system/kernel_notes/README.md`
+  - `01-linux-system/rootfs_notes/README.md`
+  - `01-linux-system/images/README.md`
+- Expanded `01-linux-system/rootfs_notes/nfs-rootfs.md` with bridge-network assumptions, NFS export checks, U-Boot bootargs examples, board verification, and troubleshooting.
+- Added `01-linux-system/hello_cross_compile/hello.c` and README for validating ARM cross compilation on IMX6ULL.
+- Updated `docs/learning_route.md` and `docs/interview_notes.md` to point to the Stage 1 sprint and interview evidence.
+
+## 2026-06-10
+
+- Day 1 evidence collected under `01-linux-system/`:
+  - `boot_logs/day1-first-boot.log`
+  - `images/day1-serial-login.png`
+- Verified Ubuntu VM recognized the USB serial adapter as `/dev/ttyACM0`.
+- Verified `sudo picocom -b 115200 /dev/ttyACM0` opened the serial terminal successfully.
+- Verified IMX6ULL booted into the 100ask Buildroot login screen over serial.
+- Added `01-linux-system/day1-summary/day1.md` as the Day 1 work summary and context handoff.
+- Noted that the screenshot showing `liuzhiwei@liuzhiwei-virtual-machine` is Ubuntu host output, not IMX6ULL board shell output; recommended adding `images/day1-board-root-shell-commands.png` from inside the board serial shell.
+- Started Day 2 U-Boot work:
+  - Added `01-linux-system/day2-summary/day2.md` with the serial logging command, U-Boot interruption steps, read-only commands, temporary network test, and completion checklist.
+  - Added `01-linux-system/uboot_notes/day2-uboot-env.md` as the fill-in record for `version`, `printenv`, `bootcmd`, `bootargs`, `bdinfo`, and U-Boot network test results.
+  - Updated `.gitignore` so `01-linux-system/boot_logs/*.log` evidence files such as `uboot.log` can be tracked.
+  - First Day 2 serial capture reached the Buildroot login prompt without stopping at U-Boot, but captured U-Boot 2017.03 banner, Kernel 4.9.88 boot log, and command line `console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw`.
+  - Successfully entered the U-Boot `=>` command prompt and captured `version`, `printenv`, `bootcmd`, `bootargs` lookup result, Ethernet MAC variables, and `bdinfo`.
+  - Confirmed `bootargs` is not a persistent environment variable in the current default environment; it is generated at boot by `mmcargs=setenv bootargs console=${console},${baudrate} root=${mmcroot}` with `mmcroot=/dev/mmcblk1p2 rootwait rw`.
+  - Tested U-Boot networking with temporary IP settings (`ipaddr=192.168.88.200`, `serverip=192.168.88.132`); ping failed because `ethernet@020b4000` PHY auto negotiation timed out before ARP could succeed.
+  - Continued direct-network debugging in Linux and confirmed the active cable is on `eth0`. With `eth1` down and `eth0=192.168.77.200/24`, the board successfully pinged Windows Realtek `192.168.77.1` with 0% packet loss.
+  - Completed the PC-direct network loop: Windows Realtek uses `192.168.77.1/24`, VMware VMnet0 bridges to Realtek, Ubuntu ens33 uses `192.168.77.132/24`, and IMX6ULL Linux eth0 uses `192.168.77.200/24`. The board successfully pinged Ubuntu `192.168.77.132` with 0% packet loss.
+  - Added persistent Ubuntu NetworkManager commands to keep `ens33` fixed at `192.168.77.132/24` across reboots without taking the default route.
+  - NetworkManager did not bind the created `ens33-static` profile to `ens33`, so Ubuntu static IP was fixed with netplan using `renderer: networkd`; `ip -br addr show ens33` now reports `ens33 UP 192.168.77.132/24`.
+  - Added Buildroot board-side static IP persistence notes for `/etc/network/interfaces`, using `eth0=192.168.77.200/24`, gateway `192.168.77.1`, and `eth1` manual/disabled.
+  - Verified after reboot that IMX6ULL `eth0` keeps `192.168.77.200/24`, confirming board-side static IP persistence.
+  - Closed Day 2 as complete. U-Boot evidence and environment-variable interpretation are recorded, and Linux-stage direct networking is ready for later NFS work.
+- Started Day 3 Kernel and device tree work:
+  - Added `01-linux-system/day3-summary/day3.md` with the exact serial logging procedure, board-side commands, optional BSP Kernel build commands, and Day 3 acceptance checklist.
+  - Added `01-linux-system/kernel_notes/day3-kernel-dtb.md` as the fill-in record for Kernel version, command line, DTB model/compatible, RootFS mount, MMC, and FEC Ethernet evidence.
+  - Reused Day 2 U-Boot evidence as the known boot chain: `/boot/zImage`, `/boot/100ask_imx6ull-14x14.dtb`, and `console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw`.
+  - Filled Day 3 evidence from the pasted Kernel/dmesg excerpt:
+    - Serial console is `ttymxc0`.
+    - MMC controllers `mmc0` and `mmc1` initialize, with `mmcblk1` detected as a 7.28 GiB device.
+    - RootFS mounts successfully from `mmcblk1p2` as ext4.
+    - FEC Ethernet registers `eth0` and `eth1`; `eth0` reaches `Link is Up - 100Mbps/Full`.
+    - Device tree model is `Freescale i.MX6 ULL 14x14 EVK Board`, compatible with `fsl,imx6ull-14x14-evk` and `fsl,imx6ull`.
+  - Saved the pasted Day 3 excerpt as `01-linux-system/boot_logs/kernel.log`.
+  - Filled the actual board-side `/proc/cmdline`: `console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw`.
+  - Filled the actual board-side `uname -a`: `Linux 100ask 4.9.88 #1 SMP PREEMPT Wed Apr 8 14:08:53 CST 2026 armv7l GNU/Linux`.
+  - Recorded a small command typo during evidence collection: `name -a` failed because the correct command is `uname -a`.
+  - Day 3 runtime evidence is complete for the current board boot path. Optional remaining work is BSP Kernel/DTB compilation verification.
+- Started Day 4 SD/eMMC RootFS work:
+  - Added `01-linux-system/day4-summary/day4.md` with the Day 3 closeout summary, RootFS inspection commands, service/network/tool checks, and Day 4 acceptance checklist.
+  - Added `01-linux-system/rootfs_notes/day4-sd-rootfs.md` as the fill-in evidence record for mount state, disk space, init services, network persistence, and available debugging tools.
+  - Day 4 starts from the confirmed current boot state: Kernel command line uses `root=/dev/mmcblk1p2 rootwait rw`, and the RootFS is a 100ask Buildroot ext4 system mounted from `mmcblk1p2`.
+  - Filled Day 4 RootFS evidence from board output:
+    - OS is Buildroot `2020.02-g65177d4`.
+    - `/` is mounted as `/dev/root` ext4 with `rw,relatime,data=ordered`.
+    - Disk usage is `1.5G` total, `691M` used, `691M` available, `50%` used.
+    - `/proc`, `/sys`, `/dev`, `/tmp`, and `/run` are mounted.
+    - `/etc/network/interfaces` persists `eth0=192.168.77.200/24` with gateway `192.168.77.1`, and keeps `eth1` manual.
+    - Board ping to Windows `192.168.77.1` and Ubuntu `192.168.77.132` both succeeded with 0% packet loss.
+    - `busybox` is not available as a standalone command in the current shell PATH, while `ifconfig`, `route`, and `ping` are usable.
+  - Completed the Day 4 tool availability check:
+    - Available: `sh`, `ifconfig`, `ip`, `ssh`, `scp`, `gdbserver`, `mosquitto_pub`, `mosquitto_sub`, `sqlite3`, `vi`, `tar`, `wget`, and `tftp`.
+    - Missing: `dropbear`.
+  - Day 4 SD/eMMC RootFS evidence is complete for the current stage.
+- Closed Day 4 and started Day 5 NFS RootFS work:
+  - Added `01-linux-system/day5-summary/day5.md` with Day 4 final summary, current network topology, Ubuntu NFS setup commands, temporary U-Boot NFS bootargs, validation commands, and troubleshooting notes.
+  - Updated `01-linux-system/rootfs_notes/nfs-rootfs.md` from placeholders to the current real topology: Ubuntu `192.168.77.132`, board `192.168.77.200`, gateway `192.168.77.1`, interface `ens33`, export `/nfs/imx6ull-rootfs`.
+  - Day 5 starts with a conservative rule: test NFS boot using temporary U-Boot variables first, without `saveenv`.
+  - Encountered and fixed the first Ubuntu NFS export setup issue: `/etc/exports.d/` did not exist, so writing `/etc/exports.d/imx6ull-rootfs.exports` failed. The directory was created with `sudo mkdir -p /etc/exports.d`, then the export line was written again.
+  - Confirmed Ubuntu NFS export is active: `sudo exportfs -v` shows `/nfs/imx6ull-rootfs` exported to `192.168.77.0/24`, and `showmount -e 127.0.0.1` lists `/nfs/imx6ull-rootfs 192.168.77.0/24`.
+  - Located the preferred BSP RootFS archive for Day 5: `E:\韦东山Linux嵌入式\开发板资料\02_100ask_imx6ull_pro_2022.08\03_开发板系统固件\Buildroot_image\rootfs.tar.bz2` (`140921733` bytes).
+  - Extracted the BSP RootFS archive to `/nfs/imx6ull-rootfs`; checks for `linuxrc`, `bin`, and `etc` passed.
+  - Completed Day 5 NFS RootFS boot:
+    - Board booted with `root=/dev/nfs nfsroot=192.168.77.132:/nfs/imx6ull-rootfs,v3,tcp`.
+    - Board prompt changed to `[root@imx6ull:~]#`.
+    - `mount` shows `192.168.77.132:/nfs/imx6ull-rootfs on / type nfs`.
+    - `df -h` shows the root filesystem size from the Ubuntu host export (`77.7G` total, `57.0G` available).
+    - Board-created `/hello-from-board` appeared on Ubuntu as `/nfs/imx6ull-rootfs/hello-from-board`.
+  - Day 5 NFS RootFS is complete using temporary U-Boot bootargs; `saveenv` has not been used.
+- Closed Day 5 and started Day 6 cross-compiled hello work:
+  - Added `01-linux-system/day6-summary/day6.md` with the Day 5 NFS closeout summary, Ubuntu cross-compile commands, NFS deployment path, board verification commands, evidence template, and troubleshooting notes.
+  - Day 6 will use the existing `01-linux-system/hello_cross_compile/hello.c` and deploy the compiled ARM binary to `/nfs/imx6ull-rootfs/root/hello`.
+  - Ubuntu cross compilation succeeded with `/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc`; `file hello` reports `ELF 32-bit LSB executable, ARM, EABI5`, dynamically linked with interpreter `/lib/ld-linux-armhf.so.3`.
+  - Deployed `hello` to `/nfs/imx6ull-rootfs/root/hello` and ran it on the board as `/root/hello`; user reported Day 6 completed. The final board output should be retained as evidence when available.
+  - Filled the final Day 6 board evidence: `/root/hello` prints `hello from IMX6ULL cross compile`, and `echo $?` returns `0`.
+- Started Day 7 review and interview preparation:
+  - Added `01-linux-system/day7-summary/day7.md` with the Stage 1 summary, daily results, evidence index, must-answer interview questions, resume wording, completion checklist, and Stage 2 preparation notes.
+  - Updated `docs/interview_notes.md` to point to the Day 7 summary and include concrete Stage 1 evidence values.
+- Expanded `02-drivers/` into a core driver closed-loop stage:
+  - Added `02-drivers/stage2-knowledge.md` explaining Device Tree, platform driver matching, GPIO descriptor API, miscdevice, KEY IRQ, poll, UART, I2C, and dmesg debugging.
+  - Added `02-drivers/stage2-sprint.md` with Day 1 through Day 8 operations and the hard rule that every sub-stage must keep artifacts in its own directory.
+  - Created independent per-day directories for GPIO/LED baseline, LED platform driver, device-tree notes, KEY IRQ, KEY poll, UART, I2C, and review/interview.
+  - Added LED, KEY IRQ, KEY poll, UART, and I2C template source files and Makefiles under their own `src/` directories.
+  - Added device-tree snippets under each experiment's `dt/` directory and `.gitkeep` placeholders for empty `logs/` and `evidence/` directories.
+  - Updated `docs/learning_route.md` and `docs/interview_notes.md` with the Stage 2 execution entry points and interview focus.
+  - Added legacy-pointer README files for older placeholder directories (`led_driver`, `key_irq_driver`, `uart_test`, `i2c_sensor`, `debug_logs`, `test_app`, `device_tree`) so new artifacts stay in per-day directories.
+  - Verification: `gcc -fsyntax-only` passed for simple user-space programs `led_test.c` and `key_read_test.c` in the current Windows shell.
+  - Verification limitation: Windows GCC lacks Linux/POSIX target headers such as `poll.h`, `termios.h`, and `linux/i2c-dev.h`, so `key_poll_test.c`, `uart_test.c`, and `i2c_read.c` should be syntax-checked in Ubuntu or with the ARM Linux cross toolchain.
+
+## 2026-06-11
+
+- Executed `02-drivers` Day 1 GPIO/LED baseline over SSH to `root@192.168.77.200`.
+- Confirmed the board is reachable on the Stage 1 direct network and SSH non-interactive access works.
+- Captured runtime state:
+  - Kernel: `Linux 100ask 4.9.88 #1 SMP PREEMPT Wed Apr 8 14:08:53 CST 2026 armv7l GNU/Linux`
+  - Bootargs: `console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw`
+  - Current Day 1 boot mode: SD/eMMC RootFS, not NFS RootFS.
+- Found LED class entries `mmc0::` and `mmc1::`, both tied to MMC triggers rather than a clearly named user LED.
+- Found exported sysfs GPIO `gpio133`, currently `direction=out`, `value=1`, `active_low=0`, `edge=none`.
+- Toggled `gpio133` through sysfs from high to low and back high; sysfs value changed successfully (`1 -> 0 -> 1`).
+- Mapped `gpio133` to `GPIO5_IO05` based on debugfs base range `gpiochip4: GPIOs 128-159`.
+- Saved Day 1 artifacts under `02-drivers/day1-gpio-led-baseline/`:
+  - `logs/board-gpio-led-baseline.log`
+  - `logs/gpio133-toggle.log`
+  - `dt/current-gpio-led-notes.md`
+  - `evidence/day1-result.md`
+  - `src/collect_day1_gpio_led.sh`
+- Locked the Day 2 LED GPIO after checking local 100ask LED driver examples:
+  - `drv/02_led/02_led_drv_imx6ull/board_100ask_imx6ull.c` uses `GROUP_PIN(5, 3)`.
+  - `drv/02_led/06_led_drv_final/100ask_led.dts` uses `GROUP_PIN(5, 3)` with comment `GPIO5_IO03`.
+  - `drv/02_led/06_led_drv_final/chip_demo_gpio.c` controls `GPIO5_IO03` as an active-low LED.
+  - Existing board DTS snippets include `MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03` in `pinctrl_leds`.
+- Exported and toggled `gpio131` (`GPIO5_IO03`) through sysfs successfully: `1 -> 0 -> 1`.
+- Updated Day 1 evidence and Day 2/Day 3 device-tree templates to use `led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;`.
+- Localized all Day 1 artifacts to Chinese while preserving command names and raw technical output:
+  - `02-drivers/day1-gpio-led-baseline/evidence/day1-result.md`
+  - `02-drivers/day1-gpio-led-baseline/dt/current-gpio-led-notes.md`
+  - `02-drivers/day1-gpio-led-baseline/logs/*.log`
+  - `02-drivers/day1-gpio-led-baseline/src/collect_day1_gpio_led.sh`
+- Started `02-drivers` Day 2 LED platform driver work:
+  - Summarized Day 1 as `02-drivers/day1-gpio-led-baseline/evidence/day1-summary.md`.
+  - Confirmed Ubuntu VM login with user `liuzhiwei` and password authentication.
+  - Confirmed 100ask Linaro toolchain exists at `/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin`, but is not in Ubuntu PATH by default.
+  - Uploaded Day 2 source files to Ubuntu under `/home/liuzhiwei/stage2-day2-led/src/`.
+  - Cross-compiled `led_test.c` successfully; `file led_test` reports ARM 32-bit ELF.
+  - Deployed `led_test` to board path `/root/stage2/day2-led/led_test`.
+  - Board run of `led_test /dev/imx6ull_led 1` currently returns `open: No such file or directory`, expected because `imx6ull_led.ko` is not loaded.
+  - Checked module build prerequisites and found the blocker: Ubuntu does not currently have a matching configured Linux 4.9.88 BSP Kernel build directory.
+  - Uploaded and extracted local `linux-4.9.tar.xz`, but it is generic `4.9.0`, not the board's running `4.9.88`, so it should not be used for this module.
+  - Tried cloning `100askTeam/imx-linux4.9.88` from Ubuntu, but DNS for `github.com` failed. Tried shallow clone from Windows, but it timed out after 10 minutes; background git processes were stopped.
+- Continued Day 2 after user provided `D:\user\browser\imx-linux4.9.88-master.zip`:
+  - Uploaded and extracted the matching Kernel source to Ubuntu at `/home/liuzhiwei/kernel-src/imx-linux4.9.88-master`.
+  - Confirmed source version is `4.9.88` and contains `100ask_imx6ull_defconfig` plus `100ask_imx6ull-14x14.dts`.
+  - Fixed old-kernel host build issue by removing duplicate `YYLTYPE yylloc` definition from DTC lexer files.
+  - Ran `make modules_prepare` successfully.
+  - Built `imx6ull_led.ko` successfully; `modinfo` reports `vermagic: 4.9.88 SMP preempt mod_unload modversions ARMv7 p2v8`.
+  - Patched test DTS to disable the existing `gpio-leds` node and add `imx6ull_led` using `led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>`.
+  - Fixed zip-extracted DTS include issues by adding a local `dt-bindings` symlink and replacing a broken `linux-event-codes.h` symlink placeholder with the actual header content.
+  - Built `100ask_imx6ull-14x14.dtb` successfully and deployed it to the board as `/boot/100ask_imx6ull-14x14.dtb`; original DTB was backed up as `/boot/100ask_imx6ull-14x14.dtb.bak-`.
+  - After reboot, board network `192.168.77.200` did not recover and SSH timed out. Ubuntu sees `/dev/ttyACM0`, but no serial output was captured yet; next step requires a physical RESET or power cycle while capturing serial.
+- Continued serial recovery:
+  - Captured U-Boot and Kernel/user-space log fragments through Ubuntu `/dev/ttyACM0`.
+  - The board reaches U-Boot and starts Linux, but user-space appears stuck around `udevadm settle` / udev worker timeouts.
+  - Network `192.168.77.200` still does not recover, and serial login shell has not appeared.
+  - Sending Enter, `root`, and Ctrl-C over serial did not obtain a shell.
+  - Recorded recovery state in `02-drivers/day2-led-platform-driver/logs/serial-recovery-attempt.log`.
+  - Recovered the board by interrupting U-Boot, booting with backup DTB `/boot/100ask_imx6ull-14x14.dtb.bak-`, and adding `init=/bin/sh`.
+  - From the minimal shell, remounted `/` read/write and copied the backup DTB back to `/boot/100ask_imx6ull-14x14.dtb`.
+  - After `reboot -f`, board SSH and network recovered at `192.168.77.200`.
+  - Confirmed normal boot args are back to `console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw`.
+  - Saved recovery evidence in `02-drivers/day2-led-platform-driver/logs/dtb-recovery-success.log`.
+  - Checked normal runtime state after recovery: `/sys/class/leds` only exposes `mmc0::` and `mmc1::`; no obvious user LED device-tree node is exposed.
+  - Day 2 will continue without directly replacing the main DTB again; next step is a conservative GPIO131 LED control validation before returning to full DTB/platform-driver matching.
+  - Rebuilt the Day 2 DTB using the board's restored original DTB as the baseline instead of the Kernel source DTS baseline.
+  - Added only one minimal node, `imx6ull_led`, to the original decompiled DTS. The resulting minimal DTB is `38828` bytes versus original `38686` bytes, and the diff against original is only `17` lines.
+  - Deployed the minimal test DTB as `/root/stage2/day2-led/100ask_imx6ull-14x14-day2-minimal.dtb` without overwriting `/boot/100ask_imx6ull-14x14.dtb`.
+  - Temporarily booted the minimal DTB through U-Boot with `ext4load mmc 1:2 0x83000000 /root/stage2/day2-led/100ask_imx6ull-14x14-day2-minimal.dtb` and `bootz 0x80800000 - 0x83000000`.
+  - Confirmed SSH returned normally and `/proc/device-tree/imx6ull_led/compatible` reports `demo,imx6ull-led`.
+  - Loaded `imx6ull_led.ko`; `/dev/imx6ull_led` was created as a misc character device.
+  - Ran `led_test /dev/imx6ull_led 1`, `0`, and `1`; dmesg reports `led on`, `led off`, and `led on`.
+  - Day 2 LED platform driver closed loop is complete using the safe minimal-DTB temporary boot path; main `/boot` DTB remains untouched.
+  - Replaced the main `/boot/100ask_imx6ull-14x14.dtb` with the already-validated minimal DTB after backing up the original as `/boot/100ask_imx6ull-14x14.dtb.before-day2-minimal`.
+  - Performed a normal reboot without manual U-Boot commands; board returned over SSH, `eth0` stayed at `192.168.77.200/24`, and `/proc/device-tree/imx6ull_led/compatible` reports `demo,imx6ull-led`.
+  - Re-ran `insmod imx6ull_led.ko` and `led_test` after the normal reboot; `/dev/imx6ull_led` was created and dmesg again reported `led on`, `led off`, `led on`.
+  - Saved main-DTB replacement evidence in `02-drivers/day2-led-platform-driver/evidence/main-dtb-replacement.md` and `logs/day2-main-dtb-replacement-test.log`.
+  - Closed Day 2 with `02-drivers/day2-led-platform-driver/evidence/day2-final-summary.md`.
+  - Confirmed current board state for Day 3 handoff: main DTB is the Day 2 minimal DTB, `/proc/device-tree/imx6ull_led/compatible` is `demo,imx6ull-led`, `eth0` is `192.168.77.200/24`, and `/dev/imx6ull_led` exists while the module is loaded.
+  - Started Stage 2 Day 3 Device Tree notes:
+  - Rewrote `02-drivers/day3-device-tree-notes/README.md` around the real Day2 DTB incident and safe minimal-DTB workflow.
+  - Added `02-drivers/day3-device-tree-notes/evidence/day3-start.md` as the Day2-to-Day3 handoff.
+  - Added `02-drivers/day3-device-tree-notes/evidence/day3-checklist.md` covering current DTB state, device-tree concepts, diff review, KEY node precheck, and Day3 closeout.
+  - Collected current runtime DTB state from the board into `02-drivers/day3-device-tree-notes/logs/current-dtb-runtime.log`.
+  - Copied and decompiled the current main DTB into `dt/current-main.dtb` and `dt/current-main.dts`.
+  - Added `evidence/current-dtb-state.md`, confirming the current main DTB includes `imx6ull_led` and that `eth0` remains normal.
+  - Added `evidence/key-node-precheck.md`, noting `gpio_keys_100ask` is enabled while generic `gpio-keys` is disabled, which matters for Day4 KEY IRQ planning.
+  - Added `evidence/day3-progress.md` as the active Day3 status file.
+  - Completed Stage 2 Day 3 Device Tree notes:
+    - Generated `logs/diff-original-vs-current-main.patch` and `logs/current-main-dtb-diff.log`; current main DTB differs from the original by 17 lines and only adds the `imx6ull_led` node.
+    - Added `evidence/device-tree-knowledge-card.md` explaining `compatible`, `status`, `led-gpios`, `GPIO_ACTIVE_LOW`, `pinctrl`, `phandle`, and platform driver matching using the real Day2 node.
+    - Added `evidence/dtb-diff-review.md` contrasting the unsafe 1023-line bad DTB diff with the safe 17-line minimal diff.
+    - Extended `evidence/key-node-precheck.md` with runtime `/dev/input`, `/proc/interrupts`, debugfs GPIO, and dmesg observations.
+    - Added `evidence/day3-summary.md`; Day3 can now hand off to Day4 KEY IRQ driver.
+  - Started and completed Stage 2 Day 4 KEY IRQ driver core loop:
+    - Confirmed `gpio_keys_100ask` exists in DTB but runtime did not show `gpio129` occupied before Day4.
+    - Selected `GPIO5_IO01/gpio129` as the Day4 key input and reused existing `key1_100ask` pinctrl phandle `0x3a`.
+    - Added a minimal `imx6ull_key` node; DTB diff from current main DTB is 17 lines and only adds the new key node.
+    - Built `imx6ull_key.ko` and `key_read_test` successfully for ARM/Linux 4.9.88.
+    - Temporarily booted the Day4 test DTB through U-Boot; `/proc/device-tree/imx6ull_key/compatible` reported `demo,imx6ull-key`.
+    - Loaded `imx6ull_key.ko`; `/dev/imx6ull_key` was created, `gpio129` was marked `key in hi IRQ`, and IRQ 208 was registered.
+    - Captured real key events with blocking read: `pressed value=0` and `released value=1`, exit code 0.
+    - Replaced the main DTB with the validated Day4 minimal DTB and backed up the Day2 DTB as `/boot/100ask_imx6ull-14x14.dtb.before-day4-key`.
+    - After normal reboot, confirmed both `imx6ull_led` and `imx6ull_key` DT nodes exist and `eth0` remains `192.168.77.200/24`.
+    - Saved Day4 evidence in `02-drivers/day4-key-irq-driver/evidence/day4-summary.md`.
+  - Closed Day4 for Day5 handoff with `02-drivers/day4-key-irq-driver/evidence/day4-to-day5-handoff.md`.
+  - Started and completed Stage 2 Day5 KEY poll driver:
+    - Updated `imx6ull_key_poll.c`, `key_poll_test.c`, and `Makefile` with robust event text, count/timeout arguments, and reusable build targets.
+    - Built `imx6ull_key_poll.ko` and `key_poll_test` successfully against Linux 4.9.88.
+    - Reused the Day4 `imx6ull_key` DT node; no new DTB change was required.
+    - After rebooting to clear the Day4 module, loaded only `imx6ull_key_poll.ko`; `/dev/imx6ull_key` was created and IRQ 208 registered as `imx6ull-key-poll`.
+    - Ran `key_poll_test /dev/imx6ull_key 2 60000`; poll captured two events and exited successfully.
+    - Saved Day5 evidence in `02-drivers/day5-key-poll-driver/evidence/day5-summary.md`, `logs/day5-key-poll-build.log`, `logs/day5-key-poll-insmod.log`, and `logs/day5-key-poll-test.log`.
+  - Backfilled Stage 2 Day 1 source artifacts after user requested `.c` source for every day:
+    - Added `02-drivers/day1-gpio-led-baseline/src/gpio_sysfs_toggle.c`.
+    - Added `02-drivers/day1-gpio-led-baseline/src/Makefile`.
+    - Updated Day1 README and `02-drivers/stage2-sprint.md` to require at least one relevant `.c` source file plus Makefile in every day's `src/` directory.
+    - Cross-compiled `gpio_sysfs_toggle` with the 100ask ARM toolchain; `file` reports ARM 32-bit ELF.
+    - Deployed it to `/root/stage2/day1-gpio_sysfs_toggle` and tested `gpio133` sysfs control successfully (`0 -> 1`, exit code 0).
+    - Saved evidence in `02-drivers/day1-gpio-led-baseline/evidence/day1-c-source-test.md` and `logs/gpio-sysfs-toggle-c-test.log`.
+  - Updated Stage 2 Day 2 source code after user asked to focus on driver and app source:
+    - `imx6ull_led.c` now supports both `write()` and `read()` on `/dev/imx6ull_led`.
+    - `led_test.c` now supports `on`, `off`, `read`, `status`, and `toggle [count] [delay_ms]`.
+    - `Makefile` now has an `app` target and configurable `APP_CFLAGS`.
+    - Rebuilt `imx6ull_led.ko` and `led_test` on Ubuntu with the 100ask ARM toolchain and Linux 4.9.88 kernel source.
+    - Deployed the updated module and app to `/root/stage2/day2-led/` and verified `read/status/on/off/toggle` after a clean reboot.
+    - Saved evidence in `02-drivers/day2-led-platform-driver/evidence/source-update-driver-app.md`, `logs/source-update-build.log`, and `logs/source-update-board-test.log`.

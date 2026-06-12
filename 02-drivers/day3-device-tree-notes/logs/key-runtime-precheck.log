@@ -1,0 +1,49 @@
+===input===
+total 0
+drwxr-xr-x 2 root root      60 Jan  1 01:10 by-path
+crw-rw---- 1 root input 13, 64 Jan  1 01:10 event0
+crw-rw---- 1 root input 13, 65 Jan  1 01:10 event1
+crw-rw---- 1 root input 13, 63 Jan  1 01:10 mice
+I: Bus=0019 Vendor=0000 Product=0000 Version=0000
+N: Name="20cc000.snvs:snvs-powerkey"
+P: Phys=snvs-pwrkey/input0
+S: Sysfs=/devices/soc0/soc/2000000.aips-bus/20cc000.snvs/20cc000.snvs:snvs-powerkey/input/input0
+U: Uniq=
+H: Handlers=kbd event0 evbug 
+B: PROP=0
+B: EV=3
+B: KEY=100000 0 0 0
+
+I: Bus=0018 Vendor=dead Product=beef Version=28bb
+N: Name="goodix-ts"
+P: Phys=input/ts
+S: Sysfs=/devices/virtual/input/input1
+U: Uniq=
+H: Handlers=event1 evbug 
+B: PROP=2
+B: EV=b
+B: KEY=1c00 0 0 0 0 0 0 0 0 0 0
+B: ABS=6e18000 0
+
+===interrupts===
+ 40:          0       GPC   4 Level     20cc000.snvs:snvs-powerkey
+ 80:          0  gpio-mxc   1 Edge      inv_mpu
+ 84:          9  gpio-mxc   5 Edge      gt9xx
+ 98:          0  gpio-mxc  19 Edge      2190000.usdhc cd
+===gpio-debug===
+ gpio-131 (                    |led                 ) out hi    
+ gpio-133 (                    |sysfs               ) out hi    
+===dmesg-key===
+[    0.397041] imx6ul-pinctrl 2290000.iomuxc-snvs: initialized IMX pinctrl driver
+[    0.880074] NFS: Registering the id_resolver key type
+[    0.880158] Key type id_resolver registered
+[    0.880183] Key type id_legacy registered
+[    2.812352] input: 20cc000.snvs:snvs-powerkey as /devices/soc0/soc/2000000.aips-bus/20cc000.snvs/20cc000.snvs:snvs-powerkey/input/input0
+[    2.896735] goodix-ts 1-005d: touch input parameters is [id x y w p]<1 800 480 1024 1024>
+[    3.032265] input: goodix-ts as /devices/virtual/input/input1
+[    3.072640] snvs_rtc 20cc000.snvs:snvs-rtc-lp: rtc core: registered 20cc000.snvs:snvs-r as rtc0
+[    3.124548] IR MCE Keyboard/mouse protocol handler initialized
+[    3.900958] Key type dns_resolver registered
+[    4.025762] snvs_rtc 20cc000.snvs:snvs-rtc-lp: setting system clock to 1970-01-01 01:10:38 UTC (4238)
+[    6.205211] evbug: Connected device: input0 (20cc000.snvs:snvs-powerkey at snvs-pwrkey/input0)
+[    6.205231] evbug: Connected device: input1 (goodix-ts at input/ts)

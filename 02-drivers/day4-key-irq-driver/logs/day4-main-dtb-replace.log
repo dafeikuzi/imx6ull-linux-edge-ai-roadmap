@@ -1,0 +1,6 @@
+-rw-rw-rw- 1 root root 38970 Jan  1 01:41 100ask_imx6ull-14x14.dtb
+-rw-r--r-- 1 root root 38686 Jan  1 01:26 100ask_imx6ull-14x14.dtb.bak-
+-rw------- 1 root root 38686 Jan  1 00:40 100ask_imx6ull-14x14.dtb.before-day2-minimal
+-rw------- 1 root root 38828 Jan  1 01:41 100ask_imx6ull-14x14.dtb.before-day4-key
+a0fcbe502b333b95216a2712d691ff88ee918b6bb1a95a81c304e07ca7bbecee  100ask_imx6ull-14x14.dtb
+a0fcbe502b333b95216a2712d691ff88ee918b6bb1a95a81c304e07ca7bbecee  /root/stage2/day4-key/100ask_imx6ull-14x14-day4-key-minimal.dtb

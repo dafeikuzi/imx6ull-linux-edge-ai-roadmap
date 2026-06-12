@@ -1,0 +1,25 @@
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day5-key-poll/src clean
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+rm -f key_poll_test
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day5-key-poll/src ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+
+  WARNING: Symbol version dump ./Module.symvers
+           is missing; modules will have no dependencies and modversions.
+
+  CC [M]  /home/liuzhiwei/stage2-day5-key-poll/src/imx6ull_key_poll.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/liuzhiwei/stage2-day5-key-poll/src/imx6ull_key_poll.mod.o
+  LD [M]  /home/liuzhiwei/stage2-day5-key-poll/src/imx6ull_key_poll.ko
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+arm-linux-gnueabihf-gcc -Wall -Wextra -O2 key_poll_test.c -o key_poll_test
+imx6ull_key_poll.ko: ELF 32-bit LSB relocatable, ARM, EABI5 version 1 (SYSV), BuildID[sha1]=7e897b3d22f9c5472dfda32744704eee7cd8a196, not stripped
+key_poll_test:       ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=35a797f85f7a4ef7a36b5397d33fd36d806b63c4, with debug_info, not stripped
+filename:       /home/liuzhiwei/stage2-day5-key-poll/src/imx6ull_key_poll.ko
+description:    IMX6ULL demo key poll driver
+vermagic:       4.9.88 SMP preempt mod_unload modversions ARMv7 p2v8 
+-rw-rw-r-- 1 liuzhiwei liuzhiwei  8052  6月 11 17:34 imx6ull_key_poll.ko
+-rwxrwxr-x 1 liuzhiwei liuzhiwei 12564  6月 11 17:34 key_poll_test
+

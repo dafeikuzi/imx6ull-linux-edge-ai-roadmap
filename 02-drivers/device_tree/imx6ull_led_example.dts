@@ -1,10 +1,15 @@
-/dts-v1/;
+/*
+ * Legacy example kept for history.
+ *
+ * Stage 2 formal device-tree snippets now live in per-day directories:
+ * - ../day2-led-platform-driver/dt/imx6ull-led-node.dts
+ * - ../day3-device-tree-notes/dt/imx6ull-stage2-nodes.dts
+ *
+ * Do not use this file as the active experiment artifact.
+ */
 
-/ {
-    imx6ull_led {
-        compatible = "demo,imx6ull-led";
-        pinctrl-names = "default";
-        status = "okay";
-    };
+imx6ull_led {
+	compatible = "demo,imx6ull-led";
+	led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+	status = "okay";
 };
-

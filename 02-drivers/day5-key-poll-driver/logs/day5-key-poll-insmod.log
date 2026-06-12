@@ -1,0 +1,7 @@
+imx6ull_key_poll        3699  0
+crw------- 1 root root 10, 56 Jan  1 02:22 /dev/imx6ull_key
+208:          0  gpio-mxc   1 Edge      imx6ull-key-poll
+ gpio-129 (                    |key                 ) in  hi IRQ
+[   72.312188] imx6ull_key_poll: no symbol version for module_layout
+[   72.318905] imx6ull_key_poll: loading out-of-tree module taints kernel.
+[   72.338026] imx6ull-key-poll imx6ull_key: imx6ull key poll driver probed, irq=208 value=0 dev=/dev/imx6ull_key

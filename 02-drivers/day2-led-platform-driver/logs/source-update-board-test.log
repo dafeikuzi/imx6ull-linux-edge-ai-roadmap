@@ -1,0 +1,23 @@
+imx6ull_led.ko: ELF 32-bit LSB relocatable, ARM, EABI5 version 1 (SYSV), BuildID[sha1]=a6f1391cec5848c0f2fa00ca825a0d7914734d32, not stripped
+led_test:       ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=5a0106ddfd93284a559c4a436d25fbdccefa3341, with debug_info, not stripped
+imx6ull_led             3200  0
+crw------- 1 root root 10, 56 Jan  1 01:11 /dev/imx6ull_led
+led state: 0
+led on
+led state: 1
+led off
+led state: 0
+led on
+led off
+led on
+led off
+led state: 0
+[   40.256318] imx6ull_led: no symbol version for module_layout
+[   40.262023] imx6ull_led: loading out-of-tree module taints kernel.
+[   40.274562] imx6ull-led imx6ull_led: imx6ull led driver probed, dev=/dev/imx6ull_led
+[   40.346866] imx6ull-led imx6ull_led: led on
+[   40.367073] imx6ull-led imx6ull_led: led off
+[   40.387453] imx6ull-led imx6ull_led: led on
+[   40.542395] imx6ull-led imx6ull_led: led off
+[   40.697093] imx6ull-led imx6ull_led: led on
+[   40.851677] imx6ull-led imx6ull_led: led off

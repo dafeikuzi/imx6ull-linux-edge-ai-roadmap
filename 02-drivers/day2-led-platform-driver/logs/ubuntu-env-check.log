@@ -1,0 +1,44 @@
+日期: 2026-06-11
+目标: 检查 Day 2 编译环境
+
+## Ubuntu 登录
+
+```text
+Host: 192.168.77.132
+User: liuzhiwei
+Login: password authentication succeeded through paramiko
+```
+
+## Ubuntu 系统
+
+```text
+Linux liuzhiwei-virtual-machine 6.8.0-124-generic #124~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 21:05:19 UTC x86_64 GNU/Linux
+```
+
+## 交叉工具链
+
+工具链存在，但默认不在 PATH：
+
+```text
+/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
+```
+
+临时使用方式：
+
+```bash
+export PATH=/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin:$PATH
+```
+
+## NFS RootFS
+
+```text
+/nfs/imx6ull-rootfs exists
+/nfs/imx6ull-rootfs/root exists, owner root:root, mode 700
+```
+
+当前板端 Day 2 实测仍从 SD/eMMC 启动，不是 NFS：
+
+```text
+console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw
+```
+

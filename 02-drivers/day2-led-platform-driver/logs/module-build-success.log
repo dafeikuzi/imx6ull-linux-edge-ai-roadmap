@@ -1,0 +1,84 @@
+日期: 2026-06-11
+目标: 编译 imx6ull_led.ko
+
+## 1. Kernel 源码来源
+
+用户提供匹配源码包：
+
+```text
+D:\user\browser\imx-linux4.9.88-master.zip
+```
+
+上传到 Ubuntu：
+
+```text
+/home/liuzhiwei/imx-linux4.9.88-master.zip
+```
+
+解压后路径：
+
+```text
+/home/liuzhiwei/kernel-src/imx-linux4.9.88-master
+```
+
+源码版本确认：
+
+```text
+VERSION = 4
+PATCHLEVEL = 9
+SUBLEVEL = 88
+```
+
+匹配配置：
+
+```text
+arch/arm/configs/100ask_imx6ull_defconfig
+arch/arm/boot/dts/100ask_imx6ull-14x14.dts
+```
+
+## 2. modules_prepare 问题和修复
+
+第一次执行 `make modules_prepare` 时遇到老内核 DTC 在新 GCC 上的常见问题：
+
+```text
+multiple definition of `yylloc'
+```
+
+修复方式：
+
+```text
+删除 scripts/dtc/dtc-lexer.l 和 scripts/dtc/dtc-lexer.lex.c 中重复的 YYLTYPE yylloc 定义。
+```
+
+## 3. 模块编译命令
+
+```bash
+export PATH=/opt/100ask/gcc-linaro-7.5.0-2019.12-x86_64_arm-linux-gnueabihf/bin:$PATH
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+KDIR=/home/liuzhiwei/kernel-src/imx-linux4.9.88-master
+
+cd /home/liuzhiwei/stage2-day2-led/src
+make KDIR="$KDIR" ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+```
+
+## 4. 编译结果
+
+```text
+imx6ull_led.ko: 6236 bytes
+led_test: 12336 bytes
+```
+
+`modinfo imx6ull_led.ko` 摘录：
+
+```text
+description:    IMX6ULL demo LED platform driver
+author:         lzw
+license:        GPL
+alias:          of:N*T*Cdemo,imx6ull-ledC*
+alias:          of:N*T*Cdemo,imx6ull-led
+vermagic:       4.9.88 SMP preempt mod_unload modversions ARMv7 p2v8
+```
+
+结论：`imx6ull_led.ko` 已成功编译，vermagic 与板端 `4.9.88` 匹配。
+

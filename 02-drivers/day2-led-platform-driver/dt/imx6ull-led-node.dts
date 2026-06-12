@@ -1,0 +1,10 @@
+/*
+ * Day 1 locked the 100ask LED pin as GPIO5_IO03 / gpio131.
+ * Merge this node into the board .dts after adding the matching pinctrl.
+ */
+
+imx6ull_led {
+	compatible = "demo,imx6ull-led";
+	led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};

@@ -1,0 +1,26 @@
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day2-led/src clean
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+  CLEAN   /home/liuzhiwei/stage2-day2-led/src/.tmp_versions
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+rm -f led_test
+make -C /home/liuzhiwei/kernel-src/imx-linux4.9.88-master M=/home/liuzhiwei/stage2-day2-led/src ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules
+make[1]: Entering directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+
+  WARNING: Symbol version dump ./Module.symvers
+           is missing; modules will have no dependencies and modversions.
+
+  CC [M]  /home/liuzhiwei/stage2-day2-led/src/imx6ull_led.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+  CC      /home/liuzhiwei/stage2-day2-led/src/imx6ull_led.mod.o
+  LD [M]  /home/liuzhiwei/stage2-day2-led/src/imx6ull_led.ko
+make[1]: Leaving directory '/home/liuzhiwei/kernel-src/imx-linux4.9.88-master'
+arm-linux-gnueabihf-gcc -Wall -Wextra -O2 led_test.c -o led_test
+imx6ull_led.ko: ELF 32-bit LSB relocatable, ARM, EABI5 version 1 (SYSV), BuildID[sha1]=a6f1391cec5848c0f2fa00ca825a0d7914734d32, not stripped
+led_test:       ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 3.2.0, BuildID[sha1]=5a0106ddfd93284a559c4a436d25fbdccefa3341, with debug_info, not stripped
+filename:       /home/liuzhiwei/stage2-day2-led/src/imx6ull_led.ko
+description:    IMX6ULL demo LED platform driver
+vermagic:       4.9.88 SMP preempt mod_unload modversions ARMv7 p2v8 
+-rw-rw-r-- 1 liuzhiwei liuzhiwei  7184  6月 11 16:23 imx6ull_led.ko
+-rwxrwxr-x 1 liuzhiwei liuzhiwei 12600  6月 11 16:23 led_test
+

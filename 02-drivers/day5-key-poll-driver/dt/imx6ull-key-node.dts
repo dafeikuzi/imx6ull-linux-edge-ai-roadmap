@@ -1,0 +1,11 @@
+/*
+ * Reuse the same node as Day 4. Only one key driver module should be loaded
+ * at a time because both create /dev/imx6ull_key.
+ */
+
+imx6ull_key {
+	compatible = "demo,imx6ull-key";
+	key-gpios = <&gpio1 18 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};
+

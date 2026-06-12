@@ -1,0 +1,84 @@
+日期: 2026-06-11
+访问方式: ssh root@192.168.77.200
+
+## 1. 系统信息
+
+```text
+Linux 100ask 4.9.88 #1 SMP PREEMPT Wed Apr 8 14:08:53 CST 2026 armv7l GNU/Linux
+console=ttymxc0,115200 root=/dev/mmcblk1p2 rootwait rw
+```
+
+## 2. /sys/class/leds
+
+```text
+mmc0::
+mmc1::
+```
+
+## 3. /sys/class/gpio
+
+```text
+export
+gpio133
+gpiochip0
+gpiochip128
+gpiochip32
+gpiochip504
+gpiochip64
+gpiochip96
+unexport
+```
+
+## 4. dmesg 中 GPIO/LED/pinctrl 相关摘录
+
+```text
+[    0.282916] pinctrl core: initialized pinctrl subsystem
+[    0.395337] imx6ul-pinctrl 20e0000.iomuxc: Invalid fsl,pins property in node /soc/aips-bus@02000000/iomuxc@020e0000/imx6ul-evk/enet1grp
+[    0.396204] imx6ul-pinctrl 20e0000.iomuxc: initialized IMX pinctrl driver
+[    0.397108] imx6ul-pinctrl 2290000.iomuxc-snvs: initialized IMX pinctrl driver
+[    1.912227] console [ttymxc0] enabled
+[    2.280216] spi_gpio spi4: gpio-miso property not found, switching to no-rx mode
+[    2.293416] spi_imx 2008000.ecspi: No CS GPIOs available
+[    2.299211] spi_imx: probe of 2008000.ecspi failed with error -22
+[    2.526439] SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256) (6 bit encapsulation enabled).
+[    2.827555] imx6ul-pinctrl 20e0000.iomuxc: pin MX6UL_PAD_GPIO1_IO01 already requested by 2010000.ecspi; cannot claim for 2040000.tsc
+[    2.839797] imx6ul-pinctrl 20e0000.iomuxc: pin-24 (2040000.tsc) status -22
+[    2.846806] imx6ul-pinctrl 20e0000.iomuxc: could not request pin 24 (MX6UL_PAD_GPIO1_IO01) from group tscgrp  on device 20e0000.iomuxc
+[    2.866419] imx6ul-tsc: probe of 2040000.tsc failed with error -22
+[    2.918539] goodix-ts 1-005d: Failed get pinctrl state:output_high
+[    2.924967] goodix-ts 1-005d: Success request irq-gpio
+[    2.930160] goodix-ts 1-005d: Success request rst-gpio
+[    3.232151] sdhci-esdhc-imx 2190000.usdhc: Got CD GPIO
+[    3.403782] ledtrig-cpu: registered to indicate activity on CPUs
+[   64.535068] Bluetooth: hci0: Failed to load rtl_bt/rtl8723b_config.bin
+```
+
+## 5. /sys/kernel/debug/gpio
+
+```text
+gpiochip0: GPIOs 0-31, parent: platform/209c000.gpio, 209c000.gpio:
+ gpio-5   (                    |goodix_ts_int       ) in  hi IRQ
+ gpio-19  (                    |cd                  ) in  hi IRQ
+ gpio-20  (                    |spi_imx             ) out hi
+
+gpiochip1: GPIOs 32-63, parent: platform/20a0000.gpio, 20a0000.gpio:
+
+gpiochip2: GPIOs 64-95, parent: platform/20a4000.gpio, 20a4000.gpio:
+ gpio-68  (                    |lcdif_rst           ) out hi
+
+gpiochip3: GPIOs 96-127, parent: platform/20a8000.gpio, 20a8000.gpio:
+
+gpiochip4: GPIOs 128-159, parent: platform/20ac000.gpio, 20ac000.gpio:
+ gpio-130 (                    |goodix_ts_rst       ) out hi
+ gpio-133 (                    |sysfs               ) out hi
+ gpio-134 (                    |phy-reset           ) out hi
+ gpio-135 (                    |spi32766.0          ) out hi
+ gpio-136 (                    |?                   ) out lo
+ gpio-137 (                    |phy-reset           ) out hi
+ gpio-138 (                    |spi4                ) out hi
+ gpio-139 (                    |spi4                ) out lo
+
+gpiochip5: GPIOs 504-511, parent: spi/spi32766.0, 74hc595, can sleep:
+ gpio-505 (                    |?                   ) out hi
+```
+

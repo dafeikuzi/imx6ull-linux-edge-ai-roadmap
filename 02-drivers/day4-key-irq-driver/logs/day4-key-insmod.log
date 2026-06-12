@@ -1,0 +1,13 @@
+imx6ull_key             3649  0
+crw------- 1 root root 10, 56 Jan  1 01:36 /dev/imx6ull_key
+ 80:          0  gpio-mxc   1 Edge      inv_mpu
+ 84:          9  gpio-mxc   5 Edge      gt9xx
+ 98:          0  gpio-mxc  19 Edge      2190000.usdhc cd
+208:          0  gpio-mxc   1 Edge      imx6ull-key
+ gpio-129 (                    |key                 ) in  hi IRQ
+[    2.280843] spi_gpio spi4: gpio-miso property not found, switching to no-rx mode
+[    2.924839] goodix-ts 1-005d: Success request irq-gpio
+[    2.930037] goodix-ts 1-005d: Success request rst-gpio
+[   45.113461] imx6ull_key: no symbol version for module_layout
+[   45.119589] imx6ull_key: loading out-of-tree module taints kernel.
+[   45.136830] imx6ull-key imx6ull_key: imx6ull key irq driver probed, irq=208 value=0 dev=/dev/imx6ull_key

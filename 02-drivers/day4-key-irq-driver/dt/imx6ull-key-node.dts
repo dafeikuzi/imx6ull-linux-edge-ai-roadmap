@@ -1,0 +1,7 @@
+imx6ull_key {
+	compatible = "demo,imx6ull-key";
+	pinctrl-names = "default";
+	pinctrl-0 = <&key1_100ask>;
+	key-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
+	status = "okay";
+};

@@ -1,0 +1,107 @@
+日期: 2026-06-11
+目标: 编译并部署带 `imx6ull_led` 节点的测试 DTB
+
+## 1. DTS 修改
+
+修改文件：
+
+```text
+/home/liuzhiwei/kernel-src/imx-linux4.9.88-master/arch/arm/boot/dts/100ask_imx6ull-14x14.dts
+```
+
+修改内容：
+
+```dts
+leds {
+    compatible = "gpio-leds";
+    status = "disabled";
+    ...
+};
+
+imx6ull_led {
+    compatible = "demo,imx6ull-led";
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_leds>;
+    led-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+    status = "okay";
+};
+```
+
+这样做的原因：
+
+```text
+原 DTS 中已有 gpio-leds 节点使用 GPIO5_IO03。
+为了让自定义 platform_driver 获取同一个 GPIO，测试 DTB 中先禁用原 gpio-leds 节点。
+```
+
+## 2. DTB 编译问题和修复
+
+问题 1：DTS include 路径找不到 `dt-bindings/input/input.h`。
+
+临时修复：
+
+```bash
+ln -s ../../../../include/dt-bindings arch/arm/boot/dts/dt-bindings
+```
+
+问题 2：zip 解压后 `include/dt-bindings/input/linux-event-codes.h` 不是符号链接，而是一行文本：
+
+```text
+../../uapi/linux/input-event-codes.h
+```
+
+临时修复：
+
+```bash
+cp -f include/uapi/linux/input-event-codes.h include/dt-bindings/input/linux-event-codes.h
+```
+
+编译命令：
+
+```bash
+make 100ask_imx6ull-14x14.dtb -j$(nproc)
+```
+
+编译结果：
+
+```text
+arch/arm/boot/dts/100ask_imx6ull-14x14.dtb
+size: 37825 bytes
+```
+
+## 3. 板端部署
+
+部署到板端：
+
+```text
+/root/stage2/day2-led/100ask_imx6ull-14x14-day2.dtb
+/root/stage2/day2-led/imx6ull_led.ko
+/root/stage2/day2-led/led_test
+```
+
+替换板端 DTB 前执行了备份，但由于 Windows PowerShell 抢先展开远端 `$(date ...)`，备份文件名变成：
+
+```text
+/boot/100ask_imx6ull-14x14.dtb.bak-
+```
+
+当前测试 DTB 替换为：
+
+```text
+/boot/100ask_imx6ull-14x14.dtb
+```
+
+## 4. 当前风险状态
+
+替换 DTB 并执行 reboot 后，板端网络 `192.168.77.200` 没有恢复，SSH 超时。
+
+Ubuntu 侧 `/dev/ttyACM0` 串口存在，但当前没有读到启动输出。需要现场按 RESET 或断电重上电后继续抓串口日志。
+
+如果启动失败，应优先回滚 DTB：
+
+```bash
+cp /boot/100ask_imx6ull-14x14.dtb.bak- /boot/100ask_imx6ull-14x14.dtb
+sync
+reboot
+```
+

@@ -1,0 +1,12 @@
+poll waiting on /dev/imx6ull_key, count=2, timeout_ms=60000
+poll event[1]: released value=1
+poll event[2]: pressed value=0
+EXIT:0
+---irq---
+208:          4  gpio-mxc   1 Edge      imx6ull-key-poll
+---gpio---
+ gpio-129 (                    |key                 ) in  hi IRQ
+---dmesg---
+[   72.312188] imx6ull_key_poll: no symbol version for module_layout
+[   72.318905] imx6ull_key_poll: loading out-of-tree module taints kernel.
+[   72.338026] imx6ull-key-poll imx6ull_key: imx6ull key poll driver probed, irq=208 value=0 dev=/dev/imx6ull_key

@@ -1,0 +1,17 @@
+--- current-main.dts	2026-06-11 16:44:47.807297516 +0800
++++ current-plus-imx6ull-key-minimal.roundtrip.dts	2026-06-11 16:44:47.847297516 +0800
+@@ -1566,6 +1566,14 @@
+ 		status = "okay";
+ 	};
+ 
++	imx6ull_key {
++		compatible = "demo,imx6ull-key";
++		pinctrl-names = "default";
++		pinctrl-0 = <0x3a>;
++		key-gpios = <0x15 0x1 0x1>;
++		status = "okay";
++	};
++
+ 	gpio_keys_100ask {
+ 		compatible = "100ask,gpio_key";
+ 		gpios = <0x15 0x1 0x1 0x9 0xe 0x1>;

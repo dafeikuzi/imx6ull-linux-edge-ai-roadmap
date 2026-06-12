@@ -1,0 +1,57 @@
+SIZES
+38970 100ask_imx6ull-14x14-day4-key-minimal.dtb
+49728 current-plus-imx6ull-key-minimal.roundtrip.dts
+88698 total
+
+DIFF_LINES
+17 diff-current-vs-day4-key-minimal.patch
+
+STATUS_DIFFS
+12:+		status = "okay";
+
+KEY_CONTEXT
+1563-		pinctrl-names = "default";
+1564-		pinctrl-0 = <0x39>;
+1565-		led-gpios = <0x15 0x3 0x1>;
+1566-		status = "okay";
+1567-	};
+1568-
+1569:	imx6ull_key {
+1570-		compatible = "demo,imx6ull-key";
+1571-		pinctrl-names = "default";
+1572-		pinctrl-0 = <0x3a>;
+1573-		key-gpios = <0x15 0x1 0x1>;
+1574-		status = "okay";
+1575-	};
+1576-
+1577:	gpio_keys_100ask {
+1578-		compatible = "100ask,gpio_key";
+1579-		gpios = <0x15 0x1 0x1 0x9 0xe 0x1>;
+1580-		pinctrl-names = "default";
+1581-		pinctrl-0 = <0x3a 0x3b>;
+1582-	};
+1583-
+1584-	gpio-keys {
+1585-		compatible = "gpio-keys";
+1586-		pinctrl-names = "default";
+1587-		status = "disabled";
+1588-
+1589-		user1 {
+1590-			label = "User1 Button";
+1591-			gpios = <0x15 0x1 0x1>;
+1592-			gpio-key,wakeup;
+1593-			linux,code = <0x2>;
+
+STDERR: Warning (unit_address_vs_reg): Node /memory has a reg or ranges property, but no unit name
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-3p0@120 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddcore@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddsoc@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@1 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@2 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /memory has a reg or ranges property, but no unit name
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-3p0@120 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddcore@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /soc/aips-bus@02000000/anatop@020c8000/regulator-vddsoc@140 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@1 has a unit name, but no reg property
+Warning (unit_address_vs_reg): Node /regulators/regulator@2 has a unit name, but no reg property
+
